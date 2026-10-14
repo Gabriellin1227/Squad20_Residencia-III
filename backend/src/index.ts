@@ -1,15 +1,19 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import { router } from "./routes";
+import { app } from './app';
 
-const port = 3000;
-const app = express();
+const port = 6667;
 
-app.get('/', (req: express.Request, res: express.Response) => {
-  res.send('Hello World!')
-})
+async function startServer() {
+  try {
+    console.log()
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+    app.listen(port, () => {
+      console.log(`Porta do servidor: ${port}`);
+    });
+  } catch (error) {
+    console.error('Erro ao iniciar o servidor', error);
+  }
+  
+}
+
+startServer();
+
