@@ -61,8 +61,7 @@ services:
 
 # Volumes para persistência de dados
 volumes:
-  - postgres_data:/var/lib/postgresql/data
-  - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  postgres_data:
 
 # Rede interna
 networks:
