@@ -1,5 +1,5 @@
 import { UUID } from "node:crypto";
-import conn from "../db";
+import { pool } from "../db";
 
 export interface Vehicle {
   id: UUID;
@@ -16,8 +16,16 @@ export interface Vehicle {
 }
 
 const getAllVehicles = async () => {
-  const [rows]: any = await conn.pool.query("SELECT * FROM veiculos");
-  return rows;
-}
+  const result = await pool.query("SELECT * FROM veiculos");
+  return result.rows;
+};
 
-export default { getAllVehicles };
+const getVehicleById = async (id: string) => {
+  const result = await pool.query("SELECT * FROM veiculos WHERE id = $1", [id]);
+  return result.rows[0];
+};
+
+export default { 
+  getAllVehicles,
+  getVehicleById
+};

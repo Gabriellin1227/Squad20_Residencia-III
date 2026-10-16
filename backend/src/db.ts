@@ -1,14 +1,17 @@
-import pg from "pg";
+import { Pool } from "pg";
+import dotenv from "dotenv";
+import path from "node:path";
 
-const pool = new pg.Pool({
+dotenv.config({ path: path.resolve(process.cwd(), "../.env") });
+
+export const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
-  max: 20, // Número máximo de conexões no pool
-  idleTimeoutMillis: 30000, // Tempo máximo de inatividade antes de liberar a conexão
-  connectionTimeoutMillis: 2000, // Tempo máximo de espera para obter uma conexão
+  password: String(process.env.DB_PASSWORD ?? ""),
+  port: Number(process.env.DB_PORT ?? 5432),
+  max: 20,
+  connectionTimeoutMillis: 2000,
 });
 
-export default { pool };
+export default pool;

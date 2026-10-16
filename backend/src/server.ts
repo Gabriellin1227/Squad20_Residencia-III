@@ -1,6 +1,6 @@
 import { app } from './app';
 
-const port = 6667;
+const port = process.env.PORT || 3000;
 
 async function startServer() {
   try {
