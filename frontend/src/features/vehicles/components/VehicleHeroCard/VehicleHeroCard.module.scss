@@ -1,0 +1,41 @@
+@use '@/styles/tokens' as *;
+@use '@/styles/breakpoints' as *;
+
+.hero {
+  --van-fill: #{$color-primary-dark};
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: $space-3;
+  min-height: 12rem;
+  padding: $space-3;
+  color: $color-surface;
+  background-color: $color-primary-dark;
+  border-bottom: 4px solid $color-warning;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+
+  @include up(md) {
+    min-height: 14rem;
+    padding: $space-4;
+  }
+}
+
+.illustration {
+  width: min(60%, 11rem);
+  margin-inline: auto;
+  margin-top: $space-3;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+}
+
+.identification {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
