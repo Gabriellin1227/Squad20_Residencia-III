@@ -3,8 +3,9 @@ import vehicleController from "../controller/vehicleController";
 
 const router = Router();
 
-router.get("/vehicle", vehicleController.getAllVehicle);
-router.get("/vehicle/:id", vehicleController.getVehicleById);
+router.get("/", vehicleController.getAllVehicle);
+router.get("/:id", vehicleController.getVehicleById);
+router.post("/", vehicleController.createVehicle);
 
 export const vehicleRoutes = router;
 export default vehicleRoutes;
