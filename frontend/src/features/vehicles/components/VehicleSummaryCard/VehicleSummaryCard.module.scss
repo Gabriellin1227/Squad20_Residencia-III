@@ -1,0 +1,27 @@
+@use '@/styles/tokens' as *;
+
+.card {
+  justify-content: space-between;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: $space-3;
+  font-size: $font-size-small;
+}
+
+.label {
+  color: $color-text-muted;
+}
+
+.value {
+  font-weight: 600;
+  text-align: right;
+}

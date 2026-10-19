@@ -1,8 +1,17 @@
-export default function App() {
+import { lazy, Suspense } from 'react';
+import { StateMessage } from '@/components/StateMessage';
+import { AppLayout } from '@/layouts/AppLayout';
+
+const VehiclesPage = lazy(() =>
+  import('@/features/vehicles/VehiclesPage').then((module) => ({ default: module.VehiclesPage })),
+);
+
+export function App() {
   return (
-    <main>
-      <h1>Frontend</h1>
-      <p>Base do projeto pronta. Adicione suas telas em src/pages.</p>
-    </main>
-  )
+    <AppLayout>
+      <Suspense fallback={<StateMessage variant="loading" title="Carregando..." />}>
+        <VehiclesPage />
+      </Suspense>
+    </AppLayout>
+  );
 }
