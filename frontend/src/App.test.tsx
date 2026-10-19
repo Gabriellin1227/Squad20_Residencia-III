@@ -1,11 +1,17 @@
-import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { App } from './App'
+import { describe, expect, it } from 'vitest'
 
 describe('<App />', () => {
-  it('renderiza o título da aplicação', () => {
+  it('renderiza o layout com a marca e o menu principal', () => {
     render(<App />)
 
-    expect(screen.getByRole('heading', { name: /frontend/i })).toBeInTheDocument()
+    expect(screen.getByText('FrotaManager')).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Menu principal' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Veículos' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
+    expect(screen.getByRole('main')).toBeInTheDocument()
   })
 })
