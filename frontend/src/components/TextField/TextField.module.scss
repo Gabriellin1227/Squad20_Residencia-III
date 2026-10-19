@@ -1,0 +1,36 @@
+@use '@/styles/tokens' as *;
+@use '@/styles/mixins' as *;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  min-width: 0;
+}
+
+.label {
+  font-size: $font-size-small;
+  font-weight: 500;
+}
+
+.labelHidden {
+  @include visually-hidden;
+}
+
+.input {
+  width: 100%;
+  min-height: $touch-target;
+  padding: $space-2 $space-3;
+  font-size: $font-size-body; // mínimo de 16 px: evita o zoom automático no iOS
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+
+  &:focus-visible {
+    border-color: $color-primary;
+  }
+}

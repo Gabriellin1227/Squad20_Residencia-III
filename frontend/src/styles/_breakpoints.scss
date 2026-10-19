@@ -1,0 +1,16 @@
+@use 'sass:map';
+
+// Breakpoints do Bootstrap 5.3. O xs (0 px) é a base e não tem media query.
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);
+
+@mixin up($bp) {
+  @media (min-width: map.get($breakpoints, $bp)) {
+    @content;
+  }
+}

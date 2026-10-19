@@ -1,9 +1,9 @@
 import { UUID } from "node:crypto";
-import vehiclesModel from "../models/vehicleModel";
+import vehicleModel, { Vehicle } from "../models/vehicleModel";
 import vehicleSchema from "./validations/vehicleSchema";
 
 const getAllVechicles = async () => {
-  const allVehicles = await vehiclesModel.getAllVehicles();
+  const allVehicles = await vehicleModel.getAllVehicles();
   return {
     type: "success",
     message: allVehicles,
@@ -12,7 +12,7 @@ const getAllVechicles = async () => {
 };
 
 const getVehicleById = async (id: string) => {
-  const vehicle = await vehiclesModel.getVehicleById(id);
+  const vehicle = await vehicleModel.getVehicleById(id);
   if (!vehicle) {
     return {
       type: "error",
@@ -27,5 +27,26 @@ const getVehicleById = async (id: string) => {
   };
 };
 
-export const vehicleService = { getAllVechicles, getVehicleById };
-export default vehicleService;
+const createVehicle = async (vehicle: Vehicle) => {
+  const validateVehicle = vehicleSchema.validate(vehicle);
+  if (validateVehicle.error) {
+    return {
+      type: "error",
+      message: validateVehicle.error.details[0].message,
+      status: 400
+    };
+  }
+  const insertUUIDVehicle = await vehicleModel.createVehicle(vehicle);
+  return {
+    type: "success",
+    message: `Vehicle created with ID: ${insertUUIDVehicle}`,
+    status: 201
+  };
+
+};
+
+export default { 
+  getAllVechicles,
+  getVehicleById,
+  createVehicle 
+};

@@ -207,3 +207,5 @@ CREATE INDEX idx_veiculos_placa ON veiculos(placa);
 CREATE INDEX idx_motoristas_cnh ON motoristas(cnh);
 CREATE INDEX idx_historico_viagem ON historico_status_viagem(viagem_id);
 CREATE INDEX idx_logs_auditoria_usuario ON logs_auditoria(usuario_id);
+
+
