@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "jsx-a11y", "oxc"],
+  "plugins": ["typescript", "react", "react-hooks", "jsx-a11y", "vitest", "oxc"],
   "categories": {
     "correctness": "error",
     "suspicious": "warn"
@@ -11,5 +11,9 @@
     "react/exhaustive-deps": "warn",
     "react/react-in-jsx-scope": "off"
   },
-  "ignorePatterns": ["dist", "node_modules"]
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "ignorePatterns": ["dist", "coverage", "playwright-report", "test-results", "node_modules"]
 }
