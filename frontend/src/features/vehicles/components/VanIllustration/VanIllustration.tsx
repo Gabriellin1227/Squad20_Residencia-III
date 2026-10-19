@@ -1,5 +1,5 @@
 export interface VanIllustrationProps {
-  className?: string;
+  className?: string
 }
 
 /** Ilustração de van em traço simples, desenhada à mão em SVG. */
@@ -23,5 +23,5 @@ export function VanIllustration({ className }: VanIllustrationProps) {
       <ellipse cx="42" cy="66" rx="14" ry="8" fill="var(--van-fill, transparent)" />
       <ellipse cx="124" cy="66" rx="14" ry="8" fill="var(--van-fill, transparent)" />
     </svg>
-  );
+  )
 }

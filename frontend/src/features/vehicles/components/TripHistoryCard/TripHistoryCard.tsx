@@ -1,10 +1,10 @@
-import { Card } from '@/components/Card';
-import { formatShortDateTime } from '@/utils/format';
-import type { Trip } from '../../types';
-import styles from './TripHistoryCard.module.scss';
+import { Card } from '@/components/Card'
+import { formatShortDateTime } from '@/utils/format'
+import type { Trip } from '../../types'
+import styles from './TripHistoryCard.module.scss'
 
 export interface TripHistoryCardProps {
-  trips: Trip[];
+  trips: Trip[]
 }
 
 export function TripHistoryCard({ trips }: TripHistoryCardProps) {
@@ -29,5 +29,5 @@ export function TripHistoryCard({ trips }: TripHistoryCardProps) {
         </ul>
       )}
     </Card>
-  );
+  )
 }

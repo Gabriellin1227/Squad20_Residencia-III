@@ -1,2 +1,2 @@
-export { InspectionChecklistCard } from './InspectionChecklistCard';
-export type { InspectionChecklistCardProps } from './InspectionChecklistCard';
+export { InspectionChecklistCard } from './InspectionChecklistCard'
+export type { InspectionChecklistCardProps } from './InspectionChecklistCard'

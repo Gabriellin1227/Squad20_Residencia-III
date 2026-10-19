@@ -1,2 +1,2 @@
-export { TripHistoryCard } from './TripHistoryCard';
-export type { TripHistoryCardProps } from './TripHistoryCard';
+export { TripHistoryCard } from './TripHistoryCard'
+export type { TripHistoryCardProps } from './TripHistoryCard'

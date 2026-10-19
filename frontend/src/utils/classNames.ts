@@ -1,5 +1,5 @@
-type ClassValue = string | false | null | undefined;
+type ClassValue = string | false | null | undefined
 
 export function classNames(...values: ClassValue[]): string {
-  return values.filter(Boolean).join(' ');
+  return values.filter(Boolean).join(' ')
 }

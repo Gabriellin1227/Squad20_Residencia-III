@@ -1,16 +1,16 @@
-import { Badge } from '@/components/Badge';
-import { Card } from '@/components/Card';
-import { formatCurrency, formatDate, formatKm } from '@/utils/format';
-import type { Maintenance, MaintenanceType } from '../../types';
-import styles from './MaintenanceCard.module.scss';
+import { Badge } from '@/components/Badge'
+import { Card } from '@/components/Card'
+import { formatCurrency, formatDate, formatKm } from '@/utils/format'
+import type { Maintenance, MaintenanceType } from '../../types'
+import styles from './MaintenanceCard.module.scss'
 
 const MAINTENANCE_TYPE_LABEL: Record<MaintenanceType, string> = {
   preventiva: 'Preventiva',
   corretiva: 'Corretiva',
-};
+}
 
 export interface MaintenanceCardProps {
-  maintenances: Maintenance[];
+  maintenances: Maintenance[]
 }
 
 export function MaintenanceCard({ maintenances }: MaintenanceCardProps) {
@@ -22,7 +22,10 @@ export function MaintenanceCard({ maintenances }: MaintenanceCardProps) {
         <ul className={styles.list}>
           {maintenances.map((maintenance) => (
             <li key={maintenance.id} className={styles.item}>
-              <Badge variant={maintenance.type === 'preventiva' ? 'info' : 'warning'} className={styles.type}>
+              <Badge
+                variant={maintenance.type === 'preventiva' ? 'info' : 'warning'}
+                className={styles.type}
+              >
                 {MAINTENANCE_TYPE_LABEL[maintenance.type]}
               </Badge>
               <span className={styles.description}>{maintenance.description}</span>
@@ -36,5 +39,5 @@ export function MaintenanceCard({ maintenances }: MaintenanceCardProps) {
         </ul>
       )}
     </Card>
-  );
+  )
 }

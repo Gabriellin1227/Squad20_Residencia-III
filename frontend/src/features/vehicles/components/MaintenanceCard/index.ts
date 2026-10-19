@@ -1,2 +1,2 @@
-export { MaintenanceCard } from './MaintenanceCard';
-export type { MaintenanceCardProps } from './MaintenanceCard';
+export { MaintenanceCard } from './MaintenanceCard'
+export type { MaintenanceCardProps } from './MaintenanceCard'

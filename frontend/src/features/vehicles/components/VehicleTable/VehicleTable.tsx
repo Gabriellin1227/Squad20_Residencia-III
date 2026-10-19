@@ -1,13 +1,13 @@
-import { Button } from '@/components/Button';
-import { formatKm } from '@/utils/format';
-import type { Vehicle } from '../../types';
-import { VehicleStatusBadge } from '../VehicleStatusBadge';
-import styles from './VehicleTable.module.scss';
+import { Button } from '@/components/Button'
+import { formatKm } from '@/utils/format'
+import type { Vehicle } from '../../types'
+import { VehicleStatusBadge } from '../VehicleStatusBadge'
+import styles from './VehicleTable.module.scss'
 
 export interface VehicleTableProps {
-  vehicles: Vehicle[];
-  onView: (vehicle: Vehicle) => void;
-  onEdit: (vehicle: Vehicle) => void;
+  vehicles: Vehicle[]
+  onView: (vehicle: Vehicle) => void
+  onEdit: (vehicle: Vehicle) => void
 }
 
 /*
@@ -32,9 +32,7 @@ export function VehicleTable({ vehicles, onView, onEdit }: VehicleTableProps) {
         <tbody className={styles.body}>
           {vehicles.map((vehicle) => (
             <tr key={vehicle.id} className={styles.row}>
-              <td className={styles.identification}>
-                {vehicle.identification}
-              </td>
+              <td className={styles.identification}>{vehicle.identification}</td>
               <td className={styles.model}>
                 <span className={styles.cellLabel} aria-hidden="true">
                   Modelo
@@ -77,5 +75,5 @@ export function VehicleTable({ vehicles, onView, onEdit }: VehicleTableProps) {
         </tbody>
       </table>
     </div>
-  );
+  )
 }

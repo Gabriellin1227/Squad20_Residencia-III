@@ -1,13 +1,13 @@
-import { Button } from '@/components/Button';
-import styles from './VehiclePagination.module.scss';
+import { Button } from '@/components/Button'
+import styles from './VehiclePagination.module.scss'
 
 export interface VehiclePaginationProps {
-  shownCount: number;
-  totalCount: number;
-  hasPrevious: boolean;
-  hasNext: boolean;
-  onPrevious: () => void;
-  onNext: () => void;
+  shownCount: number
+  totalCount: number
+  hasPrevious: boolean
+  hasNext: boolean
+  onPrevious: () => void
+  onNext: () => void
 }
 
 export function VehiclePagination({
@@ -32,5 +32,5 @@ export function VehiclePagination({
         </Button>
       </div>
     </nav>
-  );
+  )
 }

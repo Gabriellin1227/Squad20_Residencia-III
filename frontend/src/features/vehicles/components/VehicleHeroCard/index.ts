@@ -1,2 +1,2 @@
-export { VehicleHeroCard } from './VehicleHeroCard';
-export type { VehicleHeroCardProps } from './VehicleHeroCard';
+export { VehicleHeroCard } from './VehicleHeroCard'
+export type { VehicleHeroCardProps } from './VehicleHeroCard'

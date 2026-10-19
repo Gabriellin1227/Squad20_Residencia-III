@@ -1,10 +1,10 @@
-import type { Vehicle } from '../../types';
-import { VanIllustration } from '../VanIllustration';
-import { VehicleStatusBadge } from '../VehicleStatusBadge';
-import styles from './VehicleHeroCard.module.scss';
+import type { Vehicle } from '../../types'
+import { VanIllustration } from '../VanIllustration'
+import { VehicleStatusBadge } from '../VehicleStatusBadge'
+import styles from './VehicleHeroCard.module.scss'
 
 export interface VehicleHeroCardProps {
-  vehicle: Vehicle;
+  vehicle: Vehicle
 }
 
 export function VehicleHeroCard({ vehicle }: VehicleHeroCardProps) {
@@ -16,5 +16,5 @@ export function VehicleHeroCard({ vehicle }: VehicleHeroCardProps) {
         <VehicleStatusBadge status={vehicle.status} />
       </figcaption>
     </figure>
-  );
+  )
 }
