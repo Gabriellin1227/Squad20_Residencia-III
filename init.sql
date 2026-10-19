@@ -37,8 +37,11 @@ CREATE TABLE usuarios_perfis (
 CREATE TABLE motoristas (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome VARCHAR(150) NOT NULL,
+    cpf VARCHAR(11) UNIQUE NOT NULL CHECK (cpf ~ '^[0-9]{11}$'),
     cnh VARCHAR(20) UNIQUE NOT NULL,
     categoria VARCHAR(50) NOT NULL,
+    validade_cnh DATE NOT NULL,
+    motorista_coringa BOOLEAN NOT NULL DEFAULT FALSE,
     status VARCHAR(50) DEFAULT 'Disponível',
     ativo BOOLEAN DEFAULT TRUE,
     deletado_em TIMESTAMP WITH TIME ZONE,
