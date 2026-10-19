@@ -1,5 +1,5 @@
 {
-  "name": "tela-login",
+  "name": "login-mobile",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -20,8 +20,10 @@
     "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
+    "bootstrap": "^5.3.8",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.9.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.1",
