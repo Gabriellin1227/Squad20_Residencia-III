@@ -1,0 +1,61 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2 $space-3;
+  padding: $space-2 $space-3;
+  font-size: $font-size-small;
+  border: 1px solid transparent;
+  border-radius: $radius-lg;
+}
+
+.message {
+  flex: 1 1 16rem;
+  font-weight: 500;
+}
+
+.info {
+  color: $color-primary;
+  background-color: $color-primary-soft;
+  border-color: rgba($color-primary, 0.25);
+}
+
+.success {
+  color: $color-success;
+  background-color: $color-success-soft;
+  border-color: rgba($color-success, 0.25);
+}
+
+.warning {
+  color: $color-warning-text;
+  background-color: $color-warning-soft;
+  border-color: rgba($color-warning, 0.5);
+}
+
+.danger {
+  color: $color-danger;
+  background-color: $color-danger-soft;
+  border-color: rgba($color-danger, 0.25);
+}
+
+.dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: $touch-target;
+  height: $touch-target;
+  margin-block: -0.5rem;
+  padding: 0;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: $radius-md;
+
+  @include hover {
+    background-color: rgba($color-text, 0.08);
+  }
+}

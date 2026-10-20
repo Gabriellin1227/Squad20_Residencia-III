@@ -4,7 +4,7 @@ import styles from './Button.module.scss'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'danger'
   isFullWidth?: boolean
   isLoading?: boolean
   iconStart?: ReactNode

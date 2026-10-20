@@ -1,0 +1,65 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  max-width: 50rem;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+}
+
+.identity {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $space-2;
+  min-width: 0;
+}
+
+.name {
+  font-size: $font-size-h4;
+  font-weight: 600;
+}
+
+.edit {
+  width: 100%;
+
+  @include up(sm) {
+    width: auto;
+  }
+}
+
+.list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $space-3;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  min-width: 0;
+}
+
+.label {
+  font-size: $font-size-xsmall;
+  font-weight: 600;
+  color: $color-text-muted;
+}
+
+.value {
+  overflow-wrap: anywhere;
+}

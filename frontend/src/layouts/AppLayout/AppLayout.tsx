@@ -1,34 +1,34 @@
 import { useEffect, useId, useState } from 'react'
 import type { ReactNode } from 'react'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { classNames } from '@/utils/classNames'
 import styles from './AppLayout.module.scss'
 
 interface NavItem {
-  key: string
+  to: string
   label: string
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { key: 'inicio', label: 'Início' },
-  { key: 'veiculos', label: 'Veículos' },
-  { key: 'motoristas', label: 'Motoristas' },
-  { key: 'abastecimentos', label: 'Abastecimentos' },
-  { key: 'manutencoes', label: 'Manutenções' },
-  { key: 'viagens', label: 'Viagens' },
-  { key: 'relatorios', label: 'Relatórios' },
-  { key: 'perfil', label: 'Perfil' },
+  { to: '/', label: 'Início' },
+  { to: '/veiculos', label: 'Veículos' },
+  { to: '/motoristas', label: 'Motoristas' },
+  { to: '/abastecimentos', label: 'Abastecimentos' },
+  { to: '/manutencoes', label: 'Manutenções' },
+  { to: '/viagens', label: 'Viagens' },
+  { to: '/relatorios', label: 'Relatórios' },
+  { to: '/perfil', label: 'Perfil' },
 ]
 
-// Por enquanto só a tela de veículos existe.
-const ACTIVE_NAV_KEY = 'veiculos'
-
 export interface AppLayoutProps {
-  children: ReactNode
+  /** Sem `children`, renderiza a rota filha (<Outlet />). */
+  children?: ReactNode
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const panelId = useId()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!isMenuOpen) return
@@ -41,8 +41,9 @@ export function AppLayout({ children }: AppLayoutProps) {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isMenuOpen])
 
-  function handleNavClick(item: NavItem) {
-    if (item.key === ACTIVE_NAV_KEY) setIsMenuOpen(false)
+  function handleLogout() {
+    setIsMenuOpen(false)
+    navigate('/login')
   }
 
   return (
@@ -93,26 +94,20 @@ export function AppLayout({ children }: AppLayoutProps) {
         >
           <nav aria-label="Menu principal">
             <ul className={styles.navList}>
-              {NAV_ITEMS.map((item) => {
-                const isActive = item.key === ACTIVE_NAV_KEY
-                return (
-                  <li key={item.key}>
-                    <button
-                      type="button"
-                      className={classNames(
-                        styles.navItem,
-                        isActive && styles.navItemActive,
-                      )}
-                      aria-current={isActive ? 'page' : undefined}
-                      aria-disabled={isActive ? undefined : true}
-                      title={isActive ? undefined : 'Em breve'}
-                      onClick={() => handleNavClick(item)}
-                    >
-                      {item.label}
-                    </button>
-                  </li>
-                )
-              })}
+              {NAV_ITEMS.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    end={item.to === '/'}
+                    className={({ isActive }) =>
+                      classNames(styles.navItem, isActive && styles.navItemActive)
+                    }
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
             </ul>
           </nav>
 
@@ -120,7 +115,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <span className={styles.avatar} aria-hidden="true" />
             <span className={styles.userText}>
               <span className={styles.userName}>Gestor de Frota</span>
-              <button type="button" className={styles.logout}>
+              <button type="button" className={styles.logout} onClick={handleLogout}>
                 Sair
               </button>
             </span>
@@ -129,7 +124,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       </aside>
 
       <main className={styles.main}>
-        <div className={styles.content}>{children}</div>
+        <div className={styles.content}>{children ?? <Outlet />}</div>
       </main>
     </div>
   )

@@ -1,5 +1,5 @@
-@use '@/styles/tokens' as *;
-@use '@/styles/mixins' as *;
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
 
 .field {
   display: flex;
@@ -36,4 +36,14 @@
   &:focus-visible {
     border-color: $color-primary;
   }
+}
+
+.selectInvalid {
+  border-color: $color-error;
+}
+
+.errorMessage {
+  font-size: $font-size-small;
+  line-height: $line-height-small;
+  color: $color-error;
 }
