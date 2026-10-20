@@ -1,0 +1,4 @@
+[install]
+saveTextLockfile = true
+# Evita instalar versões recém-publicadas por uma janela de 24 horas.
+minimumReleaseAge = 86400

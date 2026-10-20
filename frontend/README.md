@@ -1,56 +1,78 @@
-# Frontend
+# Sistema de Gestão de Frota com Módulo de Verificação de Óbito (SVO)
 
-React 19 + TypeScript + Vite, com SCSS, testes unitários (Vitest) e e2e (Playwright).
+Aplicação web para apoiar a gestão de frota, com funcionalidades de cadastro e consulta de motoristas e estrutura para os módulos operacionais do sistema.
 
-## Primeiros passos
+> O módulo de Verificação de Óbito (SVO) deve ser implementado e validado conforme os requisitos funcionais definidos pela equipe. A descrição deste README não afirma que esse módulo já esteja concluído.
+
+## Tecnologias
+
+- React
+- TypeScript
+- TanStack Start e TanStack Router
+- Vite
+- Tailwind CSS
+- Vitest e Testing Library
+
+## Requisitos
+
+- Node.js compatível com as versões utilizadas pelo projeto
+- Bun
+
+## Instalação
+
+Na raiz do projeto, instale as dependências:
 
 ```bash
-npm install
-cp .env.example .env
-npx playwright install chromium   # só na primeira vez, para os testes e2e
-npm run dev
+bun install
 ```
 
-## Scripts
+## Desenvolvimento
 
-| Comando                 | O que faz                                         |
-| ----------------------- | ------------------------------------------------- |
-| `npm run dev`           | Servidor de desenvolvimento com HMR               |
-| `npm run build`         | Checa tipos e gera o build de produção            |
-| `npm run preview`       | Serve o build localmente                          |
-| `npm run lint`          | Lint com oxlint (`lint:fix` corrige)              |
-| `npm run format`        | Formata com Prettier (`format:check` só checa)    |
-| `npm run typecheck`     | Checagem de tipos                                 |
-| `npm test`              | Testes unitários (uma execução)                   |
-| `npm run test:watch`    | Testes unitários em modo watch                    |
-| `npm run test:coverage` | Testes com relatório de cobertura                 |
-| `npm run test:e2e`      | Testes e2e no Chromium e em viewport mobile       |
-| `npm run check`         | Lint + tipos + testes + build (rodar antes do PR) |
-
-## Estrutura
-
+```bash
+bun run dev
 ```
+
+## Testes
+
+```bash
+bun run test
+```
+
+## Verificação de código e build
+
+```bash
+bun run lint
+bun run build
+```
+
+## Estrutura do projeto
+
+```text
 src/
-  components/   # componentes reutilizáveis
-  pages/        # telas (cada uma com seu .module.scss e .test.tsx)
-  styles/       # estilos globais
-  test/         # setup do Vitest
-e2e/            # testes Playwright
+├── components/                 # Componentes reutilizáveis
+│   └── ui/                     # Componentes de interface compartilhados
+├── hooks/                      # Hooks compartilhados
+├── lib/                        # Bibliotecas e utilitários internos
+├── pages/                      # Telas da aplicação
+│   ├── CadastroMotorista/
+│   │   └── components/         # Componentes específicos do cadastro
+│   ├── Motoristas/
+│   │   └── components/         # Componentes específicos da listagem
+│   └── ...
+├── routes/                     # Rotas baseadas em arquivos
+├── styles/                     # Estilos globais
+├── types/                      # Tipos TypeScript
+└── utils/                      # Funções utilitárias
 ```
 
-- Alias `@/` aponta para `src/`.
-- Testes unitários ficam ao lado do código: `*.test.tsx`.
-- Testes e2e ficam em `e2e/*.spec.ts`.
+## Organização do código
 
-## Como adicionar sua tela
+- Use `src/components/` para componentes reutilizáveis em mais de uma tela.
+- Use `src/pages/NomeDaTela/components/` para componentes exclusivos de uma tela.
+- Use `src/pages/NomeDaTela/hooks/` para hooks específicos de uma tela.
+- Use `src/styles/` para estilos globais.
+- Preserve os arquivos de `src/routes/`, pois eles definem a navegação da aplicação.
 
-1. Crie a pasta em `src/pages/NomeDaTela/` com `index.tsx`, `NomeDaTela.module.scss` e `NomeDaTela.test.tsx`.
-2. Renderize a tela a partir do `src/App.tsx`.
-3. Rode `npm run check` antes de abrir o PR.
+## Observações
 
-## CI
-
-O workflow `.github/workflows/frontend-ci.yml` roda em todo PR e push na `main` que mexa em `frontend/`:
-
-- **quality:** lint, formatação, tipos, testes unitários com cobertura e build.
-- **e2e:** testes Playwright em Chromium, com o relatório salvo se falhar.
+Os dados de motoristas atualmente são armazenados no navegador (`localStorage`). Isso é adequado para prototipação, mas não substitui um backend compartilhado para uso multiusuário em produção.
