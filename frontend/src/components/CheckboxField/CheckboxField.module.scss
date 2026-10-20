@@ -1,0 +1,37 @@
+@use '../../styles/tokens' as *;
+
+.field {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: $touch-target;
+  padding: 0.75rem;
+  cursor: pointer;
+  background-color: $color-warning-soft;
+  border: 1px solid $color-warning;
+  border-radius: $radius-md;
+}
+
+.input {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.125rem 0 0;
+  accent-color: $color-primary;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+}
+
+.label {
+  font-size: $font-size-small;
+  font-weight: 600;
+}
+
+.description {
+  font-size: $font-size-xsmall;
+  color: $color-warning-text;
+}

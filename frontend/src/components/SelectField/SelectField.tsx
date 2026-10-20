@@ -13,6 +13,8 @@ export interface SelectFieldProps<TValue extends string> {
   options: SelectOption<TValue>[]
   onChange: (value: TValue) => void
   isLabelHidden?: boolean
+  errorMessage?: string
+  id?: string
   className?: string
 }
 
@@ -22,9 +24,12 @@ export function SelectField<TValue extends string>({
   options,
   onChange,
   isLabelHidden = false,
+  errorMessage,
+  id,
   className,
 }: SelectFieldProps<TValue>) {
-  const selectId = useId()
+  const generatedId = useId()
+  const selectId = id ?? generatedId
 
   function handleChange(nextValue: string) {
     const option = options.find((item) => item.value === nextValue)
@@ -41,8 +46,10 @@ export function SelectField<TValue extends string>({
       </label>
       <select
         id={selectId}
-        className={styles.select}
+        className={classNames(styles.select, errorMessage && styles.selectInvalid)}
         value={value}
+        aria-invalid={errorMessage ? true : undefined}
+        aria-errormessage={errorMessage ? `${selectId}-error` : undefined}
         onChange={(event) => handleChange(event.target.value)}
       >
         {options.map((option) => (
@@ -51,6 +58,11 @@ export function SelectField<TValue extends string>({
           </option>
         ))}
       </select>
+      {errorMessage ? (
+        <span id={`${selectId}-error`} className={styles.errorMessage} role="alert">
+          {errorMessage}
+        </span>
+      ) : null}
     </div>
   )
 }

@@ -1,6 +1,6 @@
-@use '@/styles/tokens' as *;
-@use '@/styles/mixins' as *;
-@use '@/styles/breakpoints' as *;
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/breakpoints' as *;
 
 // Base (xs): barra superior fixa com menu recolhível.
 // lg+: a mesma estrutura vira uma sidebar fixa à esquerda.
@@ -153,6 +153,7 @@
   border: 0;
   border-left: 4px solid transparent;
   border-radius: $radius-md;
+  text-decoration: none;
 
   @include hover {
     color: $color-surface;

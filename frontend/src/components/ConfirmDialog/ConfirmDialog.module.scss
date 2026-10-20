@@ -1,0 +1,39 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+
+.dialog {
+  width: min(28rem, calc(100% - #{$space-4}));
+  padding: $space-4;
+  color: $color-text;
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+
+  &::backdrop {
+    background-color: rgba($color-navy, 0.55);
+  }
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.description {
+  margin-top: $space-2;
+  font-size: $font-size-small;
+  color: $color-text-muted;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-2;
+  margin-top: $space-4;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, auto);
+    justify-content: end;
+  }
+}

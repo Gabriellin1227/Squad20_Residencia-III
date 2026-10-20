@@ -1,0 +1,68 @@
+@use '../../styles/tokens' as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  min-width: 0;
+  padding: $space-3;
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-left-width: 4px;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+}
+
+.label {
+  font-size: $font-size-xsmall;
+  color: $color-text-muted;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: $space-2;
+}
+
+.value {
+  font-size: $font-size-h3;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.hint {
+  font-size: $font-size-xsmall;
+}
+
+.success {
+  border-left-color: $color-success;
+
+  .hint {
+    color: $color-success;
+  }
+}
+
+.warning {
+  border-left-color: $color-warning;
+
+  .hint {
+    color: $color-warning-text;
+  }
+}
+
+.danger {
+  border-left-color: $color-danger;
+
+  .hint {
+    color: $color-danger;
+  }
+}
+
+.info {
+  border-left-color: $color-primary;
+
+  .hint {
+    color: $color-primary;
+  }
+}
