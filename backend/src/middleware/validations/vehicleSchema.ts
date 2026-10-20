@@ -13,4 +13,5 @@ const vehicleSchema = joi.object({
   atualizado_em: joi.date().optional()
 }).min(1);
 
+export const vehicleIdSchema = joi.string().guid().required();
 export default vehicleSchema;

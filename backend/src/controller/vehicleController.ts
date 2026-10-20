@@ -1,31 +1,25 @@
 import { Request, Response } from "express";
 import vehicleService from "../service/vehicleService";
-import { create } from "node:domain";
 
-const getAllVehicle = async (req: Request, res: Response) => {
-  const { message, status } = await vehicleService.getAllVechicles();
-  res.status(status).json({ message });
+const idFrom = (req: Request): string => {
+  const id = req.params.id;
+  return (Array.isArray(id) ? id[0] : id)?.trim() ?? "";
 };
 
-const getVehicleById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const cleanId = Array.isArray(id) ? id[0].trim() : id.trim();
-  const { message, status } = await vehicleService.getVehicleById(cleanId);
-  res.status(status).json({ message });
-};
+const handle = (operation: (req: Request) => Promise<{ message: unknown; status: number }>) =>
+  async (req: Request, res: Response) => {
+    try {
+      const { message, status } = await operation(req);
+      res.status(status).json({ message });
+    } catch {
+      res.status(500).json({ message: "Não foi possível concluir a operação de veículos" });
+    }
+  };
 
-const createVehicle = async (req: Request, res: Response) => {
-  const vehicle = req.body;
-  const { type, message , status } = await vehicleService.createVehicle(vehicle);
-  if (type) {
-    return res.status(status).json({message});
-  } else {
-    return res.status(201).json({message});
-  }
-};
-
-export default { 
-  getAllVehicle,
-  getVehicleById,
-  createVehicle
+export default {
+  getAllVehicles: handle(() => vehicleService.getAllVehicles()),
+  getVehicleById: handle(req => vehicleService.getVehicleById(idFrom(req))),
+  createVehicle: handle(req => vehicleService.createVehicle(req.body)),
+  updateVehicle: handle(req => vehicleService.updateVehicle(idFrom(req), req.body)),
+  deleteVehicle: handle(req => vehicleService.deleteVehicle(idFrom(req))),
 };
