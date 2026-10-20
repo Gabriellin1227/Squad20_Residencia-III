@@ -1,29 +1,29 @@
-import { useEffect, useRef } from 'react';
-import { Button } from '@/components/Button';
-import { StateMessage } from '@/components/StateMessage';
-import { InspectionChecklistCard } from './components/InspectionChecklistCard';
-import { MaintenanceCard } from './components/MaintenanceCard';
-import { TripHistoryCard } from './components/TripHistoryCard';
-import { VehicleHeroCard } from './components/VehicleHeroCard';
-import { VehicleSummaryCard } from './components/VehicleSummaryCard';
-import { useVehicleDetails } from './hooks/useVehicleDetails';
-import styles from './VehicleDetailsPage.module.scss';
+import { useEffect, useRef } from 'react'
+import { Button } from '@/components/Button'
+import { StateMessage } from '@/components/StateMessage'
+import { InspectionChecklistCard } from './components/InspectionChecklistCard'
+import { MaintenanceCard } from './components/MaintenanceCard'
+import { TripHistoryCard } from './components/TripHistoryCard'
+import { VehicleHeroCard } from './components/VehicleHeroCard'
+import { VehicleSummaryCard } from './components/VehicleSummaryCard'
+import { useVehicleDetails } from './hooks/useVehicleDetails'
+import styles from './VehicleDetailsPage.module.scss'
 
 export interface VehicleDetailsPageProps {
-  vehicleId: string;
-  onBack: () => void;
+  vehicleId: string
+  onBack: () => void
 }
 
 export function VehicleDetailsPage({ vehicleId, onBack }: VehicleDetailsPageProps) {
-  const detailsRequest = useVehicleDetails(vehicleId);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const details = detailsRequest.status === 'success' ? detailsRequest.data : null;
+  const detailsRequest = useVehicleDetails(vehicleId)
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  const details = detailsRequest.status === 'success' ? detailsRequest.data : null
 
   // Ao abrir a tela, o foco vai para o título (navegação sem rotas).
   useEffect(() => {
-    window.scrollTo({ top: 0 });
-    headingRef.current?.focus();
-  }, []);
+    window.scrollTo({ top: 0 })
+    headingRef.current?.focus()
+  }, [])
 
   function handleEdit() {
     // Edição será implementada em outra task.
@@ -92,5 +92,5 @@ export function VehicleDetailsPage({ vehicleId, onBack }: VehicleDetailsPageProp
         </div>
       )}
     </div>
-  );
+  )
 }

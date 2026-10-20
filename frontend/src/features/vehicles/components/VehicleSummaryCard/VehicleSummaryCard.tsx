@@ -1,12 +1,12 @@
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
-import { formatKm, formatMonthYear } from '@/utils/format';
-import type { Vehicle } from '../../types';
-import styles from './VehicleSummaryCard.module.scss';
+import { Button } from '@/components/Button'
+import { Card } from '@/components/Card'
+import { formatKm, formatMonthYear } from '@/utils/format'
+import type { Vehicle } from '../../types'
+import styles from './VehicleSummaryCard.module.scss'
 
 export interface VehicleSummaryCardProps {
-  vehicle: Vehicle;
-  onEdit: () => void;
+  vehicle: Vehicle
+  onEdit: () => void
 }
 
 export function VehicleSummaryCard({ vehicle, onEdit }: VehicleSummaryCardProps) {
@@ -16,7 +16,7 @@ export function VehicleSummaryCard({ vehicle, onEdit }: VehicleSummaryCardProps)
     { label: 'Quilometragem', value: formatKm(vehicle.mileageKm) },
     { label: 'Frota', value: vehicle.fleet },
     { label: 'Próxima vistoria', value: formatMonthYear(vehicle.nextInspection) },
-  ];
+  ]
 
   return (
     <Card title="Resumo Geral" className={styles.card}>
@@ -32,5 +32,5 @@ export function VehicleSummaryCard({ vehicle, onEdit }: VehicleSummaryCardProps)
         Editar veículo
       </Button>
     </Card>
-  );
+  )
 }

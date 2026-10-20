@@ -1,16 +1,22 @@
-import type { ReactNode } from 'react';
-import { classNames } from '@/utils/classNames';
-import styles from './StateMessage.module.scss';
+import type { ReactNode } from 'react'
+import { classNames } from '@/utils/classNames'
+import styles from './StateMessage.module.scss'
 
 export interface StateMessageProps {
-  title: string;
-  description?: string;
-  variant?: 'loading' | 'empty' | 'error';
-  action?: ReactNode;
-  className?: string;
+  title: string
+  description?: string
+  variant?: 'loading' | 'empty' | 'error'
+  action?: ReactNode
+  className?: string
 }
 
-export function StateMessage({ title, description, variant = 'empty', action, className }: StateMessageProps) {
+export function StateMessage({
+  title,
+  description,
+  variant = 'empty',
+  action,
+  className,
+}: StateMessageProps) {
   return (
     <div
       className={classNames(styles.state, styles[variant], className)}
@@ -21,5 +27,5 @@ export function StateMessage({ title, description, variant = 'empty', action, cl
       {description && <p className={styles.description}>{description}</p>}
       {action}
     </div>
-  );
+  )
 }

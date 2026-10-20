@@ -1,10 +1,12 @@
-import { lazy, Suspense } from 'react';
-import { StateMessage } from '@/components/StateMessage';
-import { AppLayout } from '@/layouts/AppLayout';
+import { lazy, Suspense } from 'react'
+import { StateMessage } from '@/components/StateMessage'
+import { AppLayout } from '@/layouts/AppLayout'
 
 const VehiclesPage = lazy(() =>
-  import('@/features/vehicles/VehiclesPage').then((module) => ({ default: module.VehiclesPage })),
-);
+  import('@/features/vehicles/VehiclesPage').then((module) => ({
+    default: module.VehiclesPage,
+  })),
+)
 
 export function App() {
   return (
@@ -13,5 +15,5 @@ export function App() {
         <VehiclesPage />
       </Suspense>
     </AppLayout>
-  );
+  )
 }

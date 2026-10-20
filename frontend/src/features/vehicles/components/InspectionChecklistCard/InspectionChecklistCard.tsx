@@ -1,10 +1,10 @@
-import { Card } from '@/components/Card';
-import { classNames } from '@/utils/classNames';
-import type { InspectionItem } from '../../types';
-import styles from './InspectionChecklistCard.module.scss';
+import { Card } from '@/components/Card'
+import { classNames } from '@/utils/classNames'
+import type { InspectionItem } from '../../types'
+import styles from './InspectionChecklistCard.module.scss'
 
 export interface InspectionChecklistCardProps {
-  items: InspectionItem[];
+  items: InspectionItem[]
 }
 
 export function InspectionChecklistCard({ items }: InspectionChecklistCardProps) {
@@ -14,7 +14,10 @@ export function InspectionChecklistCard({ items }: InspectionChecklistCardProps)
         {items.map((item) => (
           <li key={item.id} className={styles.item}>
             <svg
-              className={classNames(styles.icon, item.isOk ? styles.iconOk : styles.iconPending)}
+              className={classNames(
+                styles.icon,
+                item.isOk ? styles.iconOk : styles.iconPending,
+              )}
               viewBox="0 0 20 20"
               fill="none"
               stroke="currentColor"
@@ -24,15 +27,21 @@ export function InspectionChecklistCard({ items }: InspectionChecklistCardProps)
               aria-hidden="true"
             >
               <circle cx="10" cy="10" r="8" />
-              {item.isOk ? <path d="M6.5 10.2l2.4 2.4 4.6-4.9" /> : <path d="M7.5 7.5l5 5M12.5 7.5l-5 5" />}
+              {item.isOk ? (
+                <path d="M6.5 10.2l2.4 2.4 4.6-4.9" />
+              ) : (
+                <path d="M7.5 7.5l5 5M12.5 7.5l-5 5" />
+              )}
             </svg>
             <span>
               {item.label}
-              <span className={styles.srOnly}>{item.isOk ? ': aprovado' : ': pendente'}</span>
+              <span className={styles.srOnly}>
+                {item.isOk ? ': aprovado' : ': pendente'}
+              </span>
             </span>
           </li>
         ))}
       </ul>
     </Card>
-  );
+  )
 }
