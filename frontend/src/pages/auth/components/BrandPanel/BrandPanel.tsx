@@ -25,8 +25,8 @@ export function BrandPanel() {
           Controle claro para cada veículo, motorista e viagem.
         </p>
         <p className={styles.lead}>
-          Acompanhe solicitações, rotas, abastecimentos e manutenção em uma
-          operação segura e integrada.
+          Acompanhe solicitações, rotas, abastecimentos e manutenção em uma operação
+          segura e integrada.
         </p>
       </div>
 
