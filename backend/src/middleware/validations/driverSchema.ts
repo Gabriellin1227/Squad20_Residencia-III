@@ -1,12 +1,6 @@
 import joi from "joi";
+import { date } from "../../utils/dataUtils";
 
-
-const date = joi.string().custom((value: string, helpers) => {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || value.startsWith("0000")) return helpers.error("any.invalid");
-  const parsed = new Date(`${value}T00:00:00.000Z`);
-  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value
-    ? value : helpers.error("any.invalid");
-}).messages({ "any.invalid": "validade_cnh deve ser uma data válida no formato YYYY-MM-DD" });
 
 export const driverSchema = joi.object({
   nome: joi.string().trim().min(3).max(150).required(),

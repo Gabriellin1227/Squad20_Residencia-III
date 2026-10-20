@@ -1,5 +1,5 @@
 import driverModel from "../models/driverModel";
-import driverSchema, { driverIdSchema } from "./validations/driverSchema";
+import driverSchema, { driverIdSchema } from "../middleware/validations/driverSchema";
 import { withLicenseStatus } from "./driverAvailability";
 
 const success = (message: unknown, status = 200) => ({ type: "success", message, status });

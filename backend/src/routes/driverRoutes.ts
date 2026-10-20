@@ -4,11 +4,11 @@ import { validateCpf } from "../middleware/cpf";
 
 const router = Router();
 
-router.get("/driver", driverController.getAllDrivers);
-router.get("/driver/:id", driverController.getDriverById);
-router.post("/driver", validateCpf, driverController.createDriver);
-router.put("/driver/:id", validateCpf, driverController.updateDriver);
-router.delete("/driver/:id", driverController.deleteDriver);
+router.get("/", driverController.getAllDrivers);
+router.get("/:id", driverController.getDriverById);
+router.post("/", validateCpf, driverController.createDriver);
+router.put("/:id", validateCpf, driverController.updateDriver);
+router.delete("/:id", driverController.deleteDriver);
 
 export const driverRoutes = router;
 export default driverRoutes;

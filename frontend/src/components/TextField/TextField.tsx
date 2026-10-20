@@ -9,12 +9,16 @@ export interface TextFieldProps extends Omit<
 > {
   label: string
   isLabelHidden?: boolean
+  isInvalid?: boolean
+  errorMessage?: string
   onChange?: (value: string) => void
 }
 
 export function TextField({
   label,
   isLabelHidden = false,
+  isInvalid = false,
+  errorMessage,
   onChange,
   className,
   id,
@@ -33,10 +37,17 @@ export function TextField({
       </label>
       <input
         id={inputId}
-        className={styles.input}
+        className={classNames(styles.input, isInvalid && styles.inputInvalid)}
+        aria-invalid={isInvalid}
+        aria-errormessage={errorMessage ? `${inputId}-error` : undefined}
         onChange={(event) => onChange?.(event.target.value)}
         {...rest}
       />
+      {errorMessage ? (
+        <span id={`${inputId}-error`} className={styles.errorMessage} role="alert">
+          {errorMessage}
+        </span>
+      ) : null}
     </div>
   )
 }
