@@ -34,3 +34,14 @@
     border-color: $color-primary;
   }
 }
+
+.inputInvalid {
+  border-color: $color-error;
+  background-color: rgba($color-error, 0.02);
+}
+
+.errorMessage {
+  font-size: $font-size-small;
+  line-height: $line-height-small;
+  color: $color-error;
+}
