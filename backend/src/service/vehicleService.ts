@@ -1,6 +1,6 @@
 import { UUID } from "node:crypto";
 import vehicleModel, { Vehicle } from "../models/vehicleModel";
-import vehicleSchema from "./validations/vehicleSchema";
+import vehicleSchema from "../middleware/validations/vehicleSchema";
 
 const getAllVechicles = async () => {
   const allVehicles = await vehicleModel.getAllVehicles();
