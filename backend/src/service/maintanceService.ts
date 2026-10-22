@@ -1,5 +1,6 @@
 import maintanceModel, { Maintance } from "../models/maintanceModel";
 import maintanceSchema, { maintanceIdSchema } from "../middleware/validations/schemas/maintanceSchema";
+
 const success = (message: unknown, status = 200) => ({ type: "success", message, status });
 const error = (message: string, status: number) => ({ type: "error", message, status });
 const invalidId = (id: string) => !maintanceIdSchema.safeParse(id).success;
@@ -8,7 +9,7 @@ const notFound = () => error("Vehicle not found", 404);
 const handleDuplicateKeyError = (cause: unknown) => {
   const dbError = cause as { code?: string; constraint?: string };
   if (dbError?.code !== "23505") throw cause;
-  if (dbError.constraint === "id_veiculos_id") return error("Veiculo já vinculado", 409);
+  if (dbError.constraint === "veiculos_key") return error("Veiculo já vinculado", 409);
   throw cause;
 };
 

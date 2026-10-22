@@ -52,7 +52,7 @@ const createMaintance = async (maintance: Maintance) => {
   );
 
   return result.rows[0];
-}
+};
 
 const updateMaintance = async (id: string, maintance: MaintenaceInput): Promise<Maintance | undefined> => {
   const result = await pool.query(

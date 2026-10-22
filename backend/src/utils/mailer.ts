@@ -34,7 +34,7 @@ export const sendEmail = async ({ to, subject, text, html }: sendEmailOptions) =
 };
 
 sendEmail({
-  to: "g.abrielin@hotmail.com",
+  to: "gabriel.lin@souunit.com.br",
   subject: "Teste de envio servidor smtp",
   text: "Mensagem de teste enviada com sucesso!"
 });
