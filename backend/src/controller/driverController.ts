@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import driverService from "../service/driverService";
+import driverService from "../service/driver/driverService";
 
 const idFrom = (req: Request): string => {
   const id = req.params.id;

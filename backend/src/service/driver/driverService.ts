@@ -1,10 +1,10 @@
-import driverModel from "../models/driverModel";
-import driverSchema, { driverIdSchema } from "../middleware/validations/driverSchema";
+import driverModel from "../../models/driverModel";
+import driverSchema, { driverIdSchema } from "../../middleware/validations/schemas/driverSchema";
 import { withLicenseStatus } from "./driverAvailability";
 
 const success = (message: unknown, status = 200) => ({ type: "success", message, status });
 const error = (message: string, status: number) => ({ type: "error", message, status });
-const invalidId = (id: string) => driverIdSchema.validate(id).error;
+const invalidId = (id: string) => !driverIdSchema.safeParse(id).success;
 const notFound = () => error("Motorista não encontrado", 404);
 
 const documentConflict = (cause: unknown) => {
@@ -24,10 +24,10 @@ const getDriverById = async (id: string) => {
 };
 
 const createDriver = async (body: unknown) => {
-  const validation = driverSchema.required().validate(body, { abortEarly: false });
-  if (validation.error) return error(validation.error.message, 400);
+  const validation = driverSchema.safeParse(body);
+  if (!validation.success) return error(validation.error.message, 400);
   try {
-    return success(withLicenseStatus(await driverModel.createDriver(validation.value)), 201);
+    return success(withLicenseStatus(await driverModel.createDriver(validation.data)), 201);
   } catch (cause) {
     return documentConflict(cause);
   }
@@ -35,10 +35,10 @@ const createDriver = async (body: unknown) => {
 
 const updateDriver = async (id: string, body: unknown) => {
   if (invalidId(id)) return error("ID de motorista inválido", 400);
-  const validation = driverSchema.required().validate(body, { abortEarly: false });
+  const validation = driverSchema.safeParse(body);
   if (validation.error) return error(validation.error.message, 400);
   try {
-    const driver = await driverModel.updateDriver(id, validation.value);
+    const driver = await driverModel.updateDriver(id, validation.data);
     return driver ? success(withLicenseStatus(driver)) : notFound();
   } catch (cause) {
     return documentConflict(cause);

@@ -1,24 +1,12 @@
-import { UUID } from "node:crypto";
 import { pool } from "../db";
+import { type VehicleInput } from "../middleware/validations/schemas/vehicleSchema";
 
-export interface VehicleInput {
-  placa: string;
-  modelo: string;
-  tipo_combustivel: string;
-  capacidade_maxima: number;
-  teto_gasto_mensal?: number;
-};
-
-export interface Vehicle extends VehicleInput {
-  id: UUID;
-  placa: string;
-  modelo: string;
-  tipo_combustivel: string;
-  capacidade_maxima: number;
-  teto_gasto_mensal: number;
+export type Vehicle = Omit<VehicleInput, "teto_gasto_mensal" | "deletado_em" | "criado_em" | "atualizado_em"> & {
+  id: string;
+  teto_gasto_mensal: number | null;
   status: string;
   ativo: boolean;
-  deletado_em: Date;
+  deletado_em: Date | null;
   criado_em: Date;
   atualizado_em: Date;
 };
@@ -34,7 +22,9 @@ const columns = `
   ativo,
   deletado_em,
   criado_em,
-  atualizado_em
+  atualizado_em,
+  quilometragem,
+  ultimo_km_alertado,
 `;
 
 const getAllVehicles = async () => {
@@ -84,7 +74,7 @@ const updateVehicle = async (id: string, vehicle: VehicleInput): Promise<Vehicle
 };
 
 const deleteVehicle = async (id: string) => {
-  const result = await pool.query("DELETE FROM veiculos WHERE id = $1", [id]);
+  const result = await pool.query(`DELETE FROM veiculos WHERE id = $1`, [id]);
   return result.rowCount === 1;
 };
 

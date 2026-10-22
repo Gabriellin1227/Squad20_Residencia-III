@@ -35,6 +35,6 @@ export const sendEmail = async ({ to, subject, text, html }: sendEmailOptions) =
 
 sendEmail({
   to: "g.abrielin@hotmail.com",
-  subject: "FELIPE HOMOSEX",
+  subject: "Teste de envio servidor smtp",
   text: "Mensagem de teste enviada com sucesso!"
 });
