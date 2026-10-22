@@ -8,3 +8,6 @@ router.get("/:id", maintanceController.getMaintanceById);
 router.post("/", maintanceController.deleteMaintance);
 router.put("/:id", maintanceController.updateMaintance);
 router.delete("/:id", maintanceController.deleteMaintance);
+
+export const maintanceRoutes = router;
+export default maintanceRoutes;

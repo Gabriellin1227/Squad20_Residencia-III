@@ -31,7 +31,7 @@ services:
     container_name: node_backend
     restart: always
     ports:
-      - "${BACKEND_PORT:-3000}:3000" # Expõe a porta do Backend
+      - "${BACKEND_PORT:-3000}:3000"
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -39,6 +39,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
+    # Executa o script de migration e depois inicia o servidor Node
+    command: sh -c "npm run migrate:up && npm start"
     depends_on:
       db:
         condition: service_healthy
