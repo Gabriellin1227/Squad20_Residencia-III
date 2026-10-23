@@ -6,6 +6,8 @@ const error = (message: string, status: number) => ({ type: "error", message, st
 const invalidId = (id: string) => !maintanceIdSchema.safeParse(id).success;
 const notFound = () => error("Vehicle not found", 404);
 
+const INTERVALO = 10000; // <--- editar possibilidade de generico dentro de um json, ou algo do genero
+
 const handleDuplicateKeyError = (cause: unknown) => {
   const dbError = cause as { code?: string; constraint?: string };
   if (dbError?.code !== "23505") throw cause;

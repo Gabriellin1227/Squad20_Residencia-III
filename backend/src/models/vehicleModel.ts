@@ -9,6 +9,8 @@ export type Vehicle = Omit<VehicleInput, "teto_gasto_mensal" | "deletado_em" | "
   deletado_em: Date | null;
   criado_em: Date;
   atualizado_em: Date;
+  quilometragem: number;
+  ultimo_km_alertado: number;
 };
 
 const columns = `
@@ -24,7 +26,7 @@ const columns = `
   criado_em,
   atualizado_em,
   quilometragem,
-  ultimo_km_alertado,
+  ultimo_km_alertado
 `;
 
 const getAllVehicles = async () => {
@@ -36,6 +38,36 @@ const getVehicleById = async (id: string) => {
   const result = await pool.query(`SELECT ${columns} FROM veiculos WHERE id = $1`, [id]);
   return result.rows[0];
 };
+
+const getLastNotifKM = async (id: string) => {
+  const result = await pool.query(`SELECT id, quilometragem, ativo, ultimo_km_alertado FROM veiculos WHERE id = $1`, [id]);
+  return result.rows[0];
+};
+
+const updateLastNotifKM = async (id: string, vehicle: Partial<VehicleInput>) => {
+  const result = await pool.query(`
+    UPDATE veiculos 
+    SET ultimo_km_alertado = $1 
+    WHERE id = $2
+    RETURNING ${columns}`, 
+    [
+      vehicle.ultimo_km_alertado,
+      id
+    ]);
+
+    return result.rows[0];
+  
+};
+
+const vehicleRepo = {
+  searchForUpdate: (id: string) => (
+    getLastNotifKM(id)
+  ).then(r => r.rows[0]),
+
+  updateLastNotifKM: (id: string, km: number) => (
+    updateLastNotifKM(id, {ultimo_km_alertado: km})
+  )
+}
 
 const createVehicle = async (vehicle: Vehicle) => {
   const result = await pool.query(
@@ -81,6 +113,7 @@ const deleteVehicle = async (id: string) => {
 export default { 
   getAllVehicles,
   getVehicleById,
+  getLastNotifKM,
   createVehicle,
   updateVehicle,
   deleteVehicle

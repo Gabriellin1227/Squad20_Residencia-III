@@ -1,6 +1,5 @@
 import notifModel, { Notification } from "../models/notifModel";
 import notifSchema, { notifIdSchema } from "../middleware/validations/schemas/notifSchema";
-import maintanceSchema from "../middleware/validations/schemas/maintanceSchema";
 
 const success = (message: unknown, status = 200) => ({ type: "success", message, status });
 const error = (message: string, status: number) => ({ type: "error", message, status });

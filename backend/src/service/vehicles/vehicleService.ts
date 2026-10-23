@@ -23,6 +23,12 @@ const getVehicleById = async (id: string) => {
   return vehicle ? success(checkVehicleAvailability(vehicle)) : notFound();
 };
 
+const getLastNotifKM = async (id: string) => {
+  if (invalidId(id)) return error("Invalid vehicle ID", 400);
+  const vehicle = await vehicleModel.getLastNotifKM(id);
+  return vehicle ? success(checkVehicleAvailability(vehicle)) : notFound();
+}
+
 const createVehicle = async (body: unknown) => {
   const validation = vehicleSchema.safeParse(body);
   if (!validation.success) return error(validation.error.message, 400);
@@ -54,4 +60,11 @@ const deleteVehicle = async (id: string) => {
   return await vehicleModel.deleteVehicle(id) ? success("Vehicle deleted successfully") : notFound();
 };
 
-export = { getAllVehicles, getVehicleById, createVehicle, updateVehicle, deleteVehicle };
+export = { 
+  getAllVehicles,
+  getVehicleById,
+  getLastNotifKM,
+  createVehicle,
+  updateVehicle,
+  deleteVehicle 
+};
