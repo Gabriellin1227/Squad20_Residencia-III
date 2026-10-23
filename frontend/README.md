@@ -8,8 +8,22 @@ React 19 + TypeScript + Vite, com SCSS, testes unitários (Vitest) e e2e (Playwr
 npm install
 cp .env.example .env
 npx playwright install chromium   # só na primeira vez, para os testes e2e
-npm run dev
+npm run dev            # sobe os dois apps (portas 5173 e 5174)
 ```
+
+## Dois apps, um repositório
+
+| App                           | Porta | Comando                 | Build            |
+| ----------------------------- | ----- | ----------------------- | ---------------- |
+| Gestor (desktop): dashboard…  | 5173  | `npm run dev:gestor`    | `dist/gestor`    |
+| Motorista (mobile-first, PWA) | 5174  | `npm run dev:motorista` | `dist/motorista` |
+
+Cada app tem seu `index.html` e `public/` em `apps/<nome>/`, e compartilha `src/` (componentes, estilos, hooks).
+Publique cada `dist/` em um domínio próprio (ex.: `gestor.…` e `app.…`).
+
+O app do motorista é um PWA **online-first**: instalável (manifest + service worker), mas sem cache de dados.
+Sem internet ele mostra um aviso/`offline.html`. O service worker só é registrado no build de produção
+(`npm run build:motorista && npm run preview:motorista`). Instalação e geolocalização exigem HTTPS (ou `localhost`).
 
 ## Scripts
 
@@ -31,6 +45,8 @@ npm run dev
 
 ```
 src/
+  entries/      # pontos de entrada: gestor.tsx e motorista.tsx
+  apps/motorista/  # app do motorista (layout, páginas, PWA)
   components/   # componentes reutilizáveis
   pages/        # telas (cada uma com seu .module.scss e .test.tsx)
   styles/       # estilos globais

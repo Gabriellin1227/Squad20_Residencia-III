@@ -1,0 +1,42 @@
+@use '../../../styles/tokens' as *;
+
+// Estilos compartilhados pelas telas do app do motorista (mobile-first).
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+}
+
+.route {
+  font-weight: 500;
+}
+
+.muted {
+  font-size: $font-size-small;
+  color: $color-text-muted;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.actions,
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.form {
+  gap: $space-3;
+}

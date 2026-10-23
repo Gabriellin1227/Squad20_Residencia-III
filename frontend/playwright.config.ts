@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const PORT = 4173
+const GESTOR_PORT = 4173
+const MOTORISTA_PORT = 4174
 
 export default defineConfig({
   testDir: './e2e',
@@ -9,19 +10,37 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'html',
-  use: {
-    baseURL: `http://localhost:${PORT}`,
-    trace: 'on-first-retry',
-  },
+  use: { trace: 'on-first-retry' },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    {
+      name: 'gestor-desktop',
+      testMatch: /gestor\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], baseURL: `http://localhost:${GESTOR_PORT}` },
+    },
+    {
+      name: 'gestor-mobile',
+      testMatch: /gestor\.spec\.ts/,
+      use: { ...devices['Pixel 7'], baseURL: `http://localhost:${GESTOR_PORT}` },
+    },
+    {
+      name: 'motorista',
+      testMatch: /motorista\.spec\.ts/,
+      use: { ...devices['Pixel 7'], baseURL: `http://localhost:${MOTORISTA_PORT}` },
+    },
   ],
-  // Sobe o build de produção antes dos testes e2e
-  webServer: {
-    command: `npm run build && npm run preview -- --port ${PORT} --strictPort`,
-    url: `http://localhost:${PORT}`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  // Sobe o build de produção dos dois apps, cada um na sua porta.
+  webServer: [
+    {
+      command: `npm run build && npm run preview:gestor -- --port ${GESTOR_PORT}`,
+      url: `http://localhost:${GESTOR_PORT}`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+    {
+      command: `npm run preview:motorista -- --port ${MOTORISTA_PORT}`,
+      url: `http://localhost:${MOTORISTA_PORT}`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+  ],
 })
