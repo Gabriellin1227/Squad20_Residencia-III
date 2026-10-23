@@ -33,6 +33,13 @@ test('renderiza o início dentro do menu lateral', async () => {
   expect(await screen.findByText(/motoristas ativos/i)).toBeInTheDocument()
 })
 
+test('renderiza a página de perfil em /perfil', () => {
+  renderAt('/perfil')
+
+  expect(screen.getByRole('heading', { name: 'Perfil de Usuário' })).toBeInTheDocument()
+  expect(screen.queryByText(/módulo em construção/i)).not.toBeInTheDocument()
+})
+
 test('navega pelo menu lateral e marca o item ativo', async () => {
   const user = userEvent.setup()
   renderAt('/')

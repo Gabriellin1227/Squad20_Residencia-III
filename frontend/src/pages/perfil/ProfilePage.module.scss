@@ -1,0 +1,258 @@
+@use '../../styles/tokens' as *;
+.page {
+  color: $color-text;
+}
+
+.smallIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: 0 0 auto;
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.title {
+  color: $color-navy;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.subtitle {
+  margin-top: 0.25rem;
+  color: $color-text-muted;
+  font-size: $font-size-xsmall;
+}
+
+.profileCard,
+.detailsCard {
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: $color-card;
+  box-shadow: $shadow-card;
+}
+
+.profileCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+}
+
+.avatar {
+  display: grid;
+  width: 5.25rem;
+  height: 5.25rem;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid rgba($color-primary, 0.2);
+  border-radius: 50%;
+  color: $color-primary;
+  background: $color-primary-soft;
+  font-size: 1.5rem;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.profileInfo {
+  flex: 1;
+
+  h2 {
+    color: $color-navy;
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+
+  p {
+    color: $color-text-muted;
+    font-size: $font-size-xsmall;
+  }
+
+  .verified {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+    color: $color-success;
+    font-size: 0.6875rem;
+  }
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.smallButton {
+  min-height: 2.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: $font-size-xsmall;
+}
+
+.detailsCard {
+  margin-top: 1rem;
+  padding: 1.25rem;
+}
+
+.sectionTitle {
+  color: $color-primary;
+  font-size: $font-size-small;
+  font-weight: 600;
+}
+
+.fieldsGrid {
+  display: grid;
+  gap: 1rem 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.profileField {
+  min-width: 0;
+
+  label {
+    color: $color-text;
+    font-size: 0.6875rem;
+    font-weight: 400;
+  }
+
+  input {
+    min-height: 2.25rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: $radius-sm;
+    font-size: $font-size-xsmall;
+    background: $color-card;
+
+    &:read-only {
+      background: $color-surface;
+    }
+  }
+}
+
+.passwordSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: $radius-sm;
+  background: $color-surface;
+}
+
+.passwordSummaryTitle {
+  color: $color-navy;
+  font-size: $font-size-xsmall;
+  font-weight: 600;
+}
+
+.passwordSummaryDescription {
+  color: $color-text-muted;
+  font-size: 0.625rem;
+}
+
+.formActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.dialog {
+  width: min(100% - 2rem, 32rem);
+  max-width: none;
+  padding: 0;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  color: $color-text;
+  background: $color-card;
+  box-shadow: $shadow-card;
+
+  &::backdrop {
+    background: rgba($color-navy, 0.45);
+  }
+}
+
+.dialogContent {
+  padding: 1.5rem;
+}
+
+.dialogTitle {
+  color: $color-navy;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.passwordFields {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.passwordField {
+  min-width: 0;
+}
+
+.passwordInput {
+  position: relative;
+}
+
+.passwordTextField {
+  input {
+    padding-right: 2.75rem;
+  }
+}
+
+.passwordToggle {
+  position: absolute;
+  top: 2.25rem;
+  right: 0.75rem;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  color: $color-text-muted;
+  background: transparent;
+
+  &:hover {
+    color: $color-text;
+  }
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 600px) {
+  .profileCard {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 1.75rem;
+    padding-bottom: 1.75rem;
+  }
+
+  .profileField {
+    grid-column: auto;
+  }
+
+  .fieldWide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 768px) {
+  .fieldsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
