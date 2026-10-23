@@ -7,6 +7,7 @@ import { DriversPage } from '@/pages/drivers/DriversPage'
 import { HomePage } from '@/pages/home/HomePage'
 import { ComingSoonPage } from '@/pages/placeholder/ComingSoonPage'
 import { NotFoundPage } from '@/pages/placeholder/NotFoundPage'
+import ProfilePage from '@/pages/perfil'
 import { VehiclesPage } from '@/pages/vehicles/VehiclesPage'
 
 // Módulos ainda sem tela própria: mesma página provisória, só muda o título.
@@ -15,7 +16,6 @@ const COMING_SOON_ROUTES = [
   { path: 'manutencoes', title: 'Manutenções' },
   { path: 'viagens', title: 'Viagens' },
   { path: 'relatorios', title: 'Relatórios' },
-  { path: 'perfil', title: 'Perfil' },
 ]
 
 /** Rotas da aplicação (separadas do BrowserRouter para poderem ser testadas). */
@@ -31,6 +31,7 @@ export function AppRoutes() {
         <Route path="motoristas/novo" element={<DriverFormPage />} />
         <Route path="motoristas/editar/:id" element={<DriverFormPage />} />
         <Route path="motoristas/:id" element={<DriverDetailsPage />} />
+        <Route path="perfil" element={<ProfilePage />} />
         {COMING_SOON_ROUTES.map(({ path, title }) => (
           <Route key={path} path={path} element={<ComingSoonPage title={title} />} />
         ))}

@@ -1,268 +1,261 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import {
-  Home, Truck, Users, Fuel, Wrench, Route as RouteIcon, BarChart3, User,
-  Camera, ShieldCheck, LogOut, Eye, EyeOff, Menu,
-} from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState } from 'react'
+import { Button } from '@/components/Button'
+import { TextField } from '@/components/TextField'
+import styles from './ProfilePage.module.scss'
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Perfil de Usuário — FrotaManager" },
-      { name: "description", content: "Gerencie seus dados cadastrais e preferências de acesso no FrotaManager." },
-      { property: "og:title", content: "Perfil de Usuário — FrotaManager" },
-      { property: "og:description", content: "Gerencie seus dados cadastrais e preferências de acesso no FrotaManager." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: ProfilePage,
-});
-
-const nav = [
-  { label: "Início", icon: Home },
-  { label: "Veículos", icon: Truck },
-  { label: "Motoristas", icon: Users },
-  { label: "Abastecimentos", icon: Fuel },
-  { label: "Manutenções", icon: Wrench },
-  { label: "Viagens", icon: RouteIcon },
-  { label: "Relatórios", icon: BarChart3 },
-  { label: "Perfil", icon: User },
-];
-
-function Sidebar({ open }: { open: boolean }) {
-  return (
-    <aside
-      className={cn(
-        "fixed inset-y-0 left-0 z-40 flex w-[160px] flex-col bg-sidebar text-sidebar-foreground transition-transform md:translate-x-0",
-        open ? "translate-x-0" : "-translate-x-full",
-      )}
-    >
-      <div className="flex items-center gap-2 px-3 py-6">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-primary text-xs font-bold text-sidebar-primary-foreground">FM</div>
-        <div className="min-w-0">
-          <p className="text-[13px] font-medium text-sidebar-accent-foreground">FrotaManager</p>
-          <p className="truncate text-[9px] opacity-70">Gestão de Frotas - FSPH</p>
-        </div>
-      </div>
-      <nav className="flex flex-col gap-1 px-2">
-        {nav.map(({ label, icon: Icon }) => {
-          const active = label === "Perfil";
-          return (
-                        <button
-              key={label}
-              type="button"
-              className={cn(
-                "relative flex items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors",
-                active
-                  ? "bg-sidebar-primary font-semibold text-sidebar-primary-foreground before:absolute before:inset-y-0 before:left-0 before:w-1 before:rounded-l-md before:bg-highlight"
-                  : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-              )}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {label}
-            </button>
-          );
-        })}
-      </nav>
-      <div className="mt-auto flex items-center gap-2 px-3 py-5">
-        <div className="h-7 w-7 rounded-full bg-accent" />
-        <div>
-          <p className="text-[11px] font-semibold text-sidebar-accent-foreground">Gestor de Frota</p>
-          <button className="flex items-center gap-1 text-[10px] text-destructive/90 hover:text-destructive">
-            <LogOut className="h-2.5 w-2.5" /> Sair
-          </button>
-        </div>
-      </div>
-    </aside>
-  );
+const toast = {
+  success: (message: string) => window.alert(message),
+  error: (message: string) => window.alert(message),
 }
 
-function PasswordField({ id, label, value, onChange, error }: {
-  id: string; label: string; value: string; onChange: (v: string) => void; error?: string | undefined;
+const icon = (...paths: string[]) =>
+  ({ className }: { className?: string }) => (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      {paths.map((path, index) => <path key={index} d={path} />)}
+    </svg>
+  )
+
+const Camera = icon('M14 4h-4L8 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4z', 'M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8')
+const ShieldCheck = icon('M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11', 'm9 12 2 2 4-4')
+const Eye = icon('M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12', 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6')
+const EyeOff = icon('m3 3 18 18', 'M10.6 10.6a2 2 0 0 0 2.8 2.8', 'M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a15 15 0 0 1-3 3.8', 'M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a10 10 0 0 0 3-.5')
+
+function PasswordField({
+  id,
+  label,
+  value,
+  onChange,
+  error,
+}: {
+  id: string
+  label: string
+  value: string
+  onChange: (value: string) => void
+  error?: string
 }) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
+
   return (
-    <div className="space-y-1.5">
-      <Label htmlFor={id} className="text-xs">{label}</Label>
-      <div className="relative">
-        <Input id={id} type={show ? "text" : "password"} value={value} onChange={(e) => onChange(e.target.value)} className="pr-9" />
-        <button type="button" onClick={() => setShow(!show)} aria-label={show ? "Ocultar senha" : "Mostrar senha"}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-          {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+    <div className={styles.passwordField}>
+      <div className={styles.passwordInput}>
+        <TextField
+          id={id}
+          label={label}
+          type={show ? 'text' : 'password'}
+          value={value}
+          onChange={onChange}
+          isInvalid={Boolean(error)}
+          errorMessage={error}
+          className={styles.passwordTextField}
+        />
+        <button
+          type="button"
+          onClick={() => setShow(!show)}
+          aria-label={show ? 'Ocultar senha' : 'Mostrar senha'}
+          className={styles.passwordToggle}
+        >
+          {show ? <EyeOff className={styles.icon} /> : <Eye className={styles.icon} />}
         </button>
       </div>
-      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
-  );
+  )
 }
 
-function PasswordDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
-  const [cur, setCur] = useState("");
-  const [next, setNext] = useState("");
-  const [conf, setConf] = useState("");
-  const [errors, setErrors] = useState<{ cur?: string; next?: string; conf?: string }>({});
+function PasswordDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
+  const [current, setCurrent] = useState('')
+  const [next, setNext] = useState('')
+  const [confirmation, setConfirmation] = useState('')
+  const [errors, setErrors] = useState<{ current?: string; next?: string; confirmation?: string }>({})
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
-  const reset = () => { setCur(""); setNext(""); setConf(""); setErrors({}); };
+  const reset = () => {
+    setCurrent('')
+    setNext('')
+    setConfirmation('')
+    setErrors({})
+  }
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+
+    if (open && !dialog.open) dialog.showModal()
+    else if (!open && dialog.open) dialog.close()
+  }, [open])
+
+  const close = () => {
+    reset()
+    onOpenChange(false)
+  }
+
   const submit = () => {
-    const e: { cur?: string; next?: string; conf?: string } = {};
-    if (!cur) e.cur = "Informe a senha atual.";
-    if (!next) e.next = "Informe a nova senha.";
-    else if (next.length < 8) e.next = "A nova senha deve ter ao menos 8 caracteres.";
-    if (!conf) e.conf = "Confirme a nova senha.";
-    else if (next && conf !== next) e.conf = "As senhas não coincidem.";
-    setErrors(e);
-    if (Object.keys(e).length) return;
-    toast.success("Senha alterada com sucesso.");
-    reset();
-    onOpenChange(false);
-  };
+    const validationErrors: typeof errors = {}
+    if (!current) validationErrors.current = 'Informe a senha atual.'
+    if (!next) validationErrors.next = 'Informe a nova senha.'
+    else if (next.length < 8) validationErrors.next = 'A nova senha deve ter ao menos 8 caracteres.'
+    if (!confirmation) validationErrors.confirmation = 'Confirme a nova senha.'
+    else if (next && confirmation !== next) validationErrors.confirmation = 'As senhas não coincidem.'
+
+    setErrors(validationErrors)
+    if (Object.keys(validationErrors).length > 0) return
+
+    toast.success('Senha alterada com sucesso.')
+    close()
+  }
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) reset(); onOpenChange(o); }}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader><DialogTitle className="text-heading">Alterar senha</DialogTitle></DialogHeader>
-        <div className="space-y-4">
-          <PasswordField id="cur" label="Senha atual" value={cur} onChange={setCur} error={errors.cur} />
-          <PasswordField id="next" label="Nova senha" value={next} onChange={setNext} error={errors.next} />
-          <PasswordField id="conf" label="Confirmar nova senha" value={conf} onChange={setConf} error={errors.conf} />
+    <dialog
+      ref={dialogRef}
+      className={styles.dialog}
+      aria-labelledby="password-dialog-title"
+      onCancel={(event) => {
+        event.preventDefault()
+        close()
+      }}
+    >
+      <div className={styles.dialogContent}>
+        <h2 id="password-dialog-title" className={styles.dialogTitle}>Alterar senha</h2>
+        <div className={styles.passwordFields}>
+          <PasswordField id="current-password" label="Senha atual" value={current} onChange={setCurrent} error={errors.current} />
+          <PasswordField id="new-password" label="Nova senha" value={next} onChange={setNext} error={errors.next} />
+          <PasswordField id="confirm-password" label="Confirmar nova senha" value={confirmation} onChange={setConfirmation} error={errors.confirmation} />
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+        <div className={styles.dialogActions}>
+          <Button variant="secondary" onClick={close}>Cancelar</Button>
           <Button onClick={submit}>Salvar senha</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+        </div>
+      </div>
+    </dialog>
+  )
 }
 
 const initial = {
-  email: "Digite seu e-mail",
-  telefone: "Digite seu telefone",
-  departamento: "Digite seu departamento",
-  cargo: "Digite seu cargo",
-  matricula: "Digite sua matrícula",
-};
-
-
-// const handleInputChange = (field: string, value: string) => {
-//   setFormData((prev) => ({
-//     ...prev,
-//     [field]: value,
-//   }));
-// };
-
-
-function Field({ id, label, value, onChange, disabled, className }: {
-  id: string; label: string; value: string; onChange: (v: string) => void; disabled: boolean; className?: string | undefined;
-}) {
-  return (
-    <div className={cn("space-y-1.5", className)}>
-      <Label htmlFor={id} className="text-[11px] font-normal text-foreground">{label}</Label>
-      <Input 
-        id={id} 
-        value={value} 
-        readOnly={disabled} 
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={(e) => e.target.select()} // <-- A MÁGICA ACONTECE AQUI
-        className="h-9 bg-card text-xs read-only:focus-visible:ring-0" 
-      />
-    </div>
-  );
+  email: 'Digite seu e-mail',
+  telefone: 'Digite seu telefone',
+  departamento: 'Digite seu departamento',
+  cargo: 'Digite seu cargo',
+  matricula: 'Digite sua matrícula',
 }
 
 function ProfilePage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [data, setData] = useState(initial);
-  const [editing, setEditing] = useState(true);
-  const [pwOpen, setPwOpen] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [photo, setPhoto] = useState<string | null>(null)
+  const [data, setData] = useState(initial)
+  const [editing, setEditing] = useState(true)
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
 
-  const onFile = (f?: File) => {
-    if (!f) return;
-    if (!f.type.startsWith("image/")) { toast.error("Selecione um arquivo de imagem válido."); return; }
-    setPhoto(URL.createObjectURL(f));
-    toast.success("Foto atualizada.");
-  };
-  const set = (k: keyof typeof initial) => (v: string) => setData((d) => ({ ...d, [k]: v }));
+  const onFile = (file?: File) => {
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      toast.error('Selecione um arquivo de imagem válido.')
+      return
+    }
+    setPhoto(URL.createObjectURL(file))
+    toast.success('Foto atualizada.')
+  }
+
+  const setField = (key: keyof typeof initial) => (value: string) =>
+    setData((currentData) => ({ ...currentData, [key]: value }))
+
   const save = () => {
-    if (!/^\S+@\S+\.\S+$/.test(data.email)) { toast.error("Informe um e-mail válido."); return; }
-    setEditing(false);
-    toast.success("Dados salvos com sucesso.");
-  };
+    if (!/^\S+@\S+\.\S+$/.test(data.email)) {
+      toast.error('Informe um e-mail válido.')
+      return
+    }
+    setEditing(false)
+    toast.success('Dados salvos com sucesso.')
+  }
 
   return (
-    <div className="min-h-screen bg-background font-sans">
-      <Sidebar open={menuOpen} />
-      {menuOpen && (
-  <div 
-    className="fixed inset-0 z-30 bg-foreground/30 md:hidden" 
-    onClick={() => setMenuOpen(false)}
-    role="button"
-    tabIndex={0}
-    aria-label="Fechar menu"
-    onKeyDown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') setMenuOpen(false);
-    }}
-  />
-)}
-      <main className="px-4 py-6 md:ml-[160px] md:px-7 md:py-8">
-        <button className="mb-4 md:hidden" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu className="h-5 w-5" /></button>
-        <h1 className="text-2xl font-medium text-heading">Perfil de Usuário</h1>
-        <p className="mt-1 text-xs text-muted-foreground">Gerencie seus dados cadastrais e preferências de acesso</p>
+    <div className={styles.page}>
+      <div>
+        <h1 className={styles.title}>Perfil de Usuário</h1>
+        <p className={styles.subtitle}>Gerencie seus dados cadastrais e preferências de acesso</p>
 
-        <section className="mt-6 flex flex-col gap-4 rounded-lg border bg-card p-5 shadow-card sm:flex-row sm:items-center sm:py-7">
-          <div className="flex h-[84px] w-[84px] shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-accent-foreground/20 bg-accent text-2xl text-accent-foreground">
-            {photo ? <img src={photo} alt="Foto de perfil" className="h-full w-full object-cover" /> : "GS"}
+        <section className={styles.profileCard} aria-label="Informações do usuário">
+          <div className={styles.avatar}>
+            {photo ? <img src={photo} alt="Foto de perfil" /> : 'GS'}
           </div>
-          <div className="flex-1">
-            <h2 className="text-lg font-medium text-heading">Gabriel Santos</h2>
-            <p className="text-xs text-muted-foreground">Gestor de Frota · Matrícula 006842</p>
-            <p className="mt-1 flex items-center gap-1 text-[11px] text-success"><ShieldCheck className="h-3.5 w-3.5" /> Perfil verificado</p>
+          <div className={styles.profileInfo}>
+            <h2>Gabriel Santos</h2>
+            <p>Gestor de Frota · Matrícula 006842</p>
+            <p className={styles.verified}><ShieldCheck className={styles.smallIcon} /> Perfil verificado</p>
           </div>
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
-          <Button variant="outline" size="sm" className="self-start text-xs font-semibold sm:self-center" onClick={() => fileRef.current?.click()}>
-            <Camera className="h-3.5 w-3.5" /> Alterar foto
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className={styles.hiddenInput}
+            onChange={(event) => onFile(event.target.files?.[0])}
+          />
+          <Button
+            variant="secondary"
+            className={styles.smallButton}
+            onClick={() => fileRef.current?.click()}
+          >
+            <Camera className={styles.smallIcon} /> Alterar foto
           </Button>
         </section>
 
-        <section className="mt-4 rounded-lg border bg-card p-5 shadow-card">
-          <h3 className="text-sm font-medium text-primary">Dados Cadastrais</h3>
-          <div className="mt-3 grid gap-x-3 gap-y-4 sm:grid-cols-2">
-            <Field id="email" label="E-mail" value={data.email} onChange={set("email")} disabled={!editing} />
-            <Field id="tel" label="Telefone" value={data.telefone} onChange={set("telefone")} disabled={!editing} />
-            <Field id="dep" label="Departamento" value={data.departamento} onChange={set("departamento")} disabled={!editing} className="sm:col-span-2" />
-            <Field id="cargo" label="Cargo" value={data.cargo} onChange={set("cargo")} disabled={!editing} />
-            <Field id="mat" label="Matrícula" value={data.matricula} onChange={set("matricula")} disabled={!editing} />
+        <section className={styles.detailsCard}>
+          <h2 className={styles.sectionTitle}>Dados Cadastrais</h2>
+          <div className={styles.fieldsGrid}>
+            <TextField id="email" label="E-mail" value={data.email} onChange={setField('email')} readOnly={!editing} className={styles.profileField} />
+            <TextField id="telefone" label="Telefone" value={data.telefone} onChange={setField('telefone')} readOnly={!editing} className={styles.profileField} />
+            <TextField id="departamento" label="Departamento" value={data.departamento} onChange={setField('departamento')} readOnly={!editing} className={`${styles.profileField} ${styles.fieldWide}`} />
+            <TextField id="cargo" label="Cargo" value={data.cargo} onChange={setField('cargo')} readOnly={!editing} className={styles.profileField} />
+            <TextField id="matricula" label="Matrícula" value={data.matricula} onChange={setField('matricula')} readOnly={!editing} className={styles.profileField} />
           </div>
 
-          <div className="mt-4 flex items-center justify-between gap-3 rounded-md bg-muted px-3 py-3">
+          <div className={styles.passwordSummary}>
             <div>
-              <p className="text-xs font-semibold text-heading">Senha de acesso</p>
-              <p className="text-[10px] text-muted-foreground">Última alteração há 48 dias</p>
+              <p className={styles.passwordSummaryTitle}>Senha de acesso</p>
+              <p className={styles.passwordSummaryDescription}>Última alteração há 48 dias</p>
             </div>
-            <Button variant="outline" size="sm" className="text-xs font-semibold" onClick={() => setPwOpen(true)}>Alterar senha</Button>
+            <Button
+              variant="secondary"
+              className={styles.smallButton}
+              onClick={() => setPasswordDialogOpen(true)}
+            >
+              Alterar senha
+            </Button>
           </div>
 
-          <div className="mt-4 flex gap-2">
-            <Button variant="outline" size="sm" className="text-xs font-semibold"
-              onClick={() => { if (editing) setData(initial); setEditing(!editing); }}>
-              {editing ? "Cancelar" : "Editar"}
+          <div className={styles.formActions}>
+            <Button
+              variant="secondary"
+              className={styles.smallButton}
+              onClick={() => {
+                if (editing) setData(initial)
+                setEditing(!editing)
+              }}
+            >
+              {editing ? 'Cancelar' : 'Editar'}
             </Button>
-            <Button size="sm" className="text-xs font-semibold" onClick={save} disabled={!editing}>Salvar</Button>
+            <Button className={styles.smallButton} onClick={save} disabled={!editing}>
+              Salvar
+            </Button>
           </div>
         </section>
-      </main>
-      <PasswordDialog open={pwOpen} onOpenChange={setPwOpen} />
+      </div>
+      <PasswordDialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen} />
     </div>
-  );
+  )
 }
+
+export default ProfilePage
