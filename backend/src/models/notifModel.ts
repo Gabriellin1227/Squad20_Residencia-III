@@ -32,7 +32,7 @@ const getNotifById = async (id: string) => {
   return result.rows[0];
 }
 
-const createNotif = async (notification: Notification) => {
+const createNotif = async (notification: Partial<Notification>) => {
   const result = await pool.query(
     `INSERT INTO notificacoes (usuario_id, tipo_alerta, mensagem, lida, veiculo_id)
     VALUES ($1, $2, $3, $4, $5)
@@ -70,6 +70,17 @@ const deleteNotif = async (id: string) => {
   const result = await pool.query(`DELETE FROM notificacoes WHERE id = $1`, [id]);
   return result.rowCount === 1;
 };
+
+const notifRepo = {
+  create: (notif: Notification) => (
+    createNotif(notif)
+  )
+};
+
+/*
+
+usuario_id, tipo_alerta, mensagem, lida, veiculo_id
+*/
 
 export default {
   getAllNotif,

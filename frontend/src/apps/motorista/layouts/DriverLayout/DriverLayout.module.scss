@@ -1,0 +1,112 @@
+@use '../../../../styles/tokens' as *;
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/breakpoints' as *;
+
+// Mobile-first: coluna única com barra de abas fixa embaixo.
+// Em telas largas o app continua em coluna centralizada (como um "celular").
+
+$tab-bar-height: 4rem;
+$driver-max-width: 32rem;
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  max-width: $driver-max-width;
+  margin-inline: auto;
+  background-color: $color-background;
+
+  @include up(md) {
+    border-inline: 1px solid $color-border;
+  }
+}
+
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: $space-2 $space-3;
+  padding-top: calc(#{$space-2} + env(safe-area-inset-top));
+  color: $color-on-navy;
+  background-color: $color-primary-dark;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: $font-size-xsmall;
+  font-weight: 700;
+  background-color: $color-primary;
+  border-radius: 50%;
+}
+
+.brand {
+  font-weight: 500;
+}
+
+.offline {
+  position: sticky;
+  top: 3.5rem;
+  z-index: 9;
+  padding: $space-2 $space-3;
+  font-size: $font-size-small;
+  font-weight: 600;
+  color: $color-warning-text;
+  background-color: $color-warning-soft;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: $space-3;
+  padding-bottom: calc(#{$tab-bar-height} + #{$space-4} + env(safe-area-inset-bottom));
+}
+
+.tabBar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  max-width: $driver-max-width;
+  margin-inline: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  background-color: $color-card;
+  border-top: 1px solid $color-border;
+}
+
+.tabList {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tabItem {
+  min-width: 0;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: $tab-bar-height;
+  font-size: $font-size-xsmall;
+  color: $color-text-muted;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline-offset: -4px;
+  }
+}
+
+.tabActive {
+  font-weight: 600;
+  color: $color-primary;
+}

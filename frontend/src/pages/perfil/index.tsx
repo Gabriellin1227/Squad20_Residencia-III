@@ -8,7 +8,8 @@ const toast = {
   error: (message: string) => window.alert(message),
 }
 
-const icon = (...paths: string[]) =>
+const icon =
+  (...paths: string[]) =>
   ({ className }: { className?: string }) => (
     <svg
       aria-hidden="true"
@@ -20,14 +21,27 @@ const icon = (...paths: string[]) =>
       strokeLinejoin="round"
       className={className}
     >
-      {paths.map((path, index) => <path key={index} d={path} />)}
+      {paths.map((path, index) => (
+        <path key={index} d={path} />
+      ))}
     </svg>
   )
 
-const Camera = icon('M14 4h-4L8 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4z', 'M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8')
+const Camera = icon(
+  'M14 4h-4L8 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4z',
+  'M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
+)
 const ShieldCheck = icon('M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11', 'm9 12 2 2 4-4')
-const Eye = icon('M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12', 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6')
-const EyeOff = icon('m3 3 18 18', 'M10.6 10.6a2 2 0 0 0 2.8 2.8', 'M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a15 15 0 0 1-3 3.8', 'M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a10 10 0 0 0 3-.5')
+const Eye = icon(
+  'M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12',
+  'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6',
+)
+const EyeOff = icon(
+  'm3 3 18 18',
+  'M10.6 10.6a2 2 0 0 0 2.8 2.8',
+  'M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a15 15 0 0 1-3 3.8',
+  'M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a10 10 0 0 0 3-.5',
+)
 
 function PasswordField({
   id,
@@ -80,7 +94,11 @@ function PasswordDialog({
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
   const [confirmation, setConfirmation] = useState('')
-  const [errors, setErrors] = useState<{ current?: string; next?: string; confirmation?: string }>({})
+  const [errors, setErrors] = useState<{
+    current?: string
+    next?: string
+    confirmation?: string
+  }>({})
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   const reset = () => {
@@ -107,9 +125,11 @@ function PasswordDialog({
     const validationErrors: typeof errors = {}
     if (!current) validationErrors.current = 'Informe a senha atual.'
     if (!next) validationErrors.next = 'Informe a nova senha.'
-    else if (next.length < 8) validationErrors.next = 'A nova senha deve ter ao menos 8 caracteres.'
+    else if (next.length < 8)
+      validationErrors.next = 'A nova senha deve ter ao menos 8 caracteres.'
     if (!confirmation) validationErrors.confirmation = 'Confirme a nova senha.'
-    else if (next && confirmation !== next) validationErrors.confirmation = 'As senhas não coincidem.'
+    else if (next && confirmation !== next)
+      validationErrors.confirmation = 'As senhas não coincidem.'
 
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
@@ -129,14 +149,36 @@ function PasswordDialog({
       }}
     >
       <div className={styles.dialogContent}>
-        <h2 id="password-dialog-title" className={styles.dialogTitle}>Alterar senha</h2>
+        <h2 id="password-dialog-title" className={styles.dialogTitle}>
+          Alterar senha
+        </h2>
         <div className={styles.passwordFields}>
-          <PasswordField id="current-password" label="Senha atual" value={current} onChange={setCurrent} error={errors.current} />
-          <PasswordField id="new-password" label="Nova senha" value={next} onChange={setNext} error={errors.next} />
-          <PasswordField id="confirm-password" label="Confirmar nova senha" value={confirmation} onChange={setConfirmation} error={errors.confirmation} />
+          <PasswordField
+            id="current-password"
+            label="Senha atual"
+            value={current}
+            onChange={setCurrent}
+            error={errors.current}
+          />
+          <PasswordField
+            id="new-password"
+            label="Nova senha"
+            value={next}
+            onChange={setNext}
+            error={errors.next}
+          />
+          <PasswordField
+            id="confirm-password"
+            label="Confirmar nova senha"
+            value={confirmation}
+            onChange={setConfirmation}
+            error={errors.confirmation}
+          />
         </div>
         <div className={styles.dialogActions}>
-          <Button variant="secondary" onClick={close}>Cancelar</Button>
+          <Button variant="secondary" onClick={close}>
+            Cancelar
+          </Button>
           <Button onClick={submit}>Salvar senha</Button>
         </div>
       </div>
@@ -185,7 +227,9 @@ function ProfilePage() {
     <div className={styles.page}>
       <div>
         <h1 className={styles.title}>Perfil de Usuário</h1>
-        <p className={styles.subtitle}>Gerencie seus dados cadastrais e preferências de acesso</p>
+        <p className={styles.subtitle}>
+          Gerencie seus dados cadastrais e preferências de acesso
+        </p>
 
         <section className={styles.profileCard} aria-label="Informações do usuário">
           <div className={styles.avatar}>
@@ -194,7 +238,9 @@ function ProfilePage() {
           <div className={styles.profileInfo}>
             <h2>Gabriel Santos</h2>
             <p>Gestor de Frota · Matrícula 006842</p>
-            <p className={styles.verified}><ShieldCheck className={styles.smallIcon} /> Perfil verificado</p>
+            <p className={styles.verified}>
+              <ShieldCheck className={styles.smallIcon} /> Perfil verificado
+            </p>
           </div>
           <input
             ref={fileRef}
@@ -215,17 +261,54 @@ function ProfilePage() {
         <section className={styles.detailsCard}>
           <h2 className={styles.sectionTitle}>Dados Cadastrais</h2>
           <div className={styles.fieldsGrid}>
-            <TextField id="email" label="E-mail" value={data.email} onChange={setField('email')} readOnly={!editing} className={styles.profileField} />
-            <TextField id="telefone" label="Telefone" value={data.telefone} onChange={setField('telefone')} readOnly={!editing} className={styles.profileField} />
-            <TextField id="departamento" label="Departamento" value={data.departamento} onChange={setField('departamento')} readOnly={!editing} className={`${styles.profileField} ${styles.fieldWide}`} />
-            <TextField id="cargo" label="Cargo" value={data.cargo} onChange={setField('cargo')} readOnly={!editing} className={styles.profileField} />
-            <TextField id="matricula" label="Matrícula" value={data.matricula} onChange={setField('matricula')} readOnly={!editing} className={styles.profileField} />
+            <TextField
+              id="email"
+              label="E-mail"
+              value={data.email}
+              onChange={setField('email')}
+              readOnly={!editing}
+              className={styles.profileField}
+            />
+            <TextField
+              id="telefone"
+              label="Telefone"
+              value={data.telefone}
+              onChange={setField('telefone')}
+              readOnly={!editing}
+              className={styles.profileField}
+            />
+            <TextField
+              id="departamento"
+              label="Departamento"
+              value={data.departamento}
+              onChange={setField('departamento')}
+              readOnly={!editing}
+              className={`${styles.profileField} ${styles.fieldWide}`}
+            />
+            <TextField
+              id="cargo"
+              label="Cargo"
+              value={data.cargo}
+              onChange={setField('cargo')}
+              readOnly={!editing}
+              className={styles.profileField}
+            />
+            <TextField
+              id="matricula"
+              label="Matrícula"
+              value={data.matricula}
+              onChange={setField('matricula')}
+              readOnly={!editing}
+              className={styles.profileField}
+            />
           </div>
 
           <div className={styles.passwordSummary}>
             <div>
               <p className={styles.passwordSummaryTitle}>Senha de acesso</p>
-              <p className={styles.passwordSummaryDescription}>Última alteração há 48 dias</p>
+              <p className={styles.passwordSummaryDescription}>
+                Última alteração há 48 dias
+              </p>
             </div>
             <Button
               variant="secondary"

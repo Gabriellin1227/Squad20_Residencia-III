@@ -6,12 +6,17 @@ import { LoginForm } from './components/LoginForm'
 import type { LoginFormValues } from './types'
 import styles from './LoginPage.module.scss'
 
-export function LoginPage() {
+export interface LoginPageProps {
+  /** Rota para onde ir após o login (padrão: painel do gestor). */
+  redirectTo?: string
+}
+
+export function LoginPage({ redirectTo = '/' }: LoginPageProps) {
   const navigate = useNavigate()
 
   const handleSubmit = async (values: LoginFormValues) => {
     await login(values)
-    navigate('/')
+    navigate(redirectTo)
   }
 
   return (
