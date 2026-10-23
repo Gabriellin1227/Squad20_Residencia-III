@@ -57,9 +57,9 @@ function Sidebar({ open }: { open: boolean }) {
         {nav.map(({ label, icon: Icon }) => {
           const active = label === "Perfil";
           return (
-            <a
+                        <button
               key={label}
-              href="#"
+              type="button"
               className={cn(
                 "relative flex items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors",
                 active
@@ -69,7 +69,7 @@ function Sidebar({ open }: { open: boolean }) {
             >
               <Icon className="h-3.5 w-3.5" />
               {label}
-            </a>
+            </button>
           );
         })}
       </nav>
@@ -153,12 +153,13 @@ const initial = {
 };
 
 
-const handleInputChange = (field: string, value: string) => {
-  setFormData((prev) => ({
-    ...prev,
-    [field]: value,
-  }));
-};
+// const handleInputChange = (field: string, value: string) => {
+//   setFormData((prev) => ({
+//     ...prev,
+//     [field]: value,
+//   }));
+// };
+
 
 function Field({ id, label, value, onChange, disabled, className }: {
   id: string; label: string; value: string; onChange: (v: string) => void; disabled: boolean; className?: string | undefined;
@@ -202,7 +203,18 @@ function ProfilePage() {
   return (
     <div className="min-h-screen bg-background font-sans">
       <Sidebar open={menuOpen} />
-      {menuOpen && <div className="fixed inset-0 z-30 bg-foreground/30 md:hidden" onClick={() => setMenuOpen(false)} />}
+      {menuOpen && (
+  <div 
+    className="fixed inset-0 z-30 bg-foreground/30 md:hidden" 
+    onClick={() => setMenuOpen(false)}
+    role="button"
+    tabIndex={0}
+    aria-label="Fechar menu"
+    onKeyDown={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') setMenuOpen(false);
+    }}
+  />
+)}
       <main className="px-4 py-6 md:ml-[160px] md:px-7 md:py-8">
         <button className="mb-4 md:hidden" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu className="h-5 w-5" /></button>
         <h1 className="text-2xl font-medium text-heading">Perfil de Usuário</h1>
