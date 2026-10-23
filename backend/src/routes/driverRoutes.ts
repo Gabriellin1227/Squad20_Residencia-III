@@ -1,6 +1,6 @@
 import { Router } from "express";
 import driverController from "../controller/driverController";
-import { validateCpf } from "../middleware/cpf";
+import { validateCpf } from "../middleware/validations/cpf";
 
 const router = Router();
 

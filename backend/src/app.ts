@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { vehicleRoutes } from "./routes/vehicleRoutes";
 import { driverRoutes } from "./routes/driverRoutes";
+import maintanceRoutes from "./routes/maintanceRoutes";
+import notifRoutes from "./routes/notifRoutes";
 
 export const app = express();
 
@@ -12,6 +14,8 @@ app.use(cors());
 
 app.use("/vehicles", vehicleRoutes);
 app.use("/drivers", driverRoutes);
+app.use("/maintance", maintanceRoutes);
+app.use("/notification", notifRoutes);
 
 export default app;
 

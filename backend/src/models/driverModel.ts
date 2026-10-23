@@ -1,13 +1,5 @@
 import { pool } from "../db";
-
-export interface DriverInput {
-  nome: string;
-  cpf: string;
-  cnh: string;
-  categoria: string;
-  validade_cnh: string;
-  motorista_coringa?: boolean;
-}
+import { driverSchema, type DriverInput } from "../middleware/validations/schemas/driverSchema";
 
 export interface Driver extends DriverInput {
   id: string;
