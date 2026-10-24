@@ -6,10 +6,14 @@ import jestPlugin from "eslint-plugin-jest";
 import eslintConfigPrettier from "eslint-config-prettier"; // 1. Importado aqui
 
 export default tseslint.config(
+  // Ignora os arquivos de configuração na raiz e a pasta de build
+  {
+    ignores: ["jest.config.ts", "eslint.config.ts", "dist/**"],
+  },
   // Regras recomendadas padrão (JS e TS)
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  
+
   // Configuração de ambiente Node.js para os arquivos-fonte
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
@@ -21,10 +25,14 @@ export default tseslint.config(
       },
     },
   },
-  
+
   // Configuração do Jest (aplicada exclusivamente a arquivos de teste)
   {
-    files: ["**/*.test.{js,ts}", "**/*.spec.{js,ts}", "**/__tests__/**/*.{js,ts}"],
+    files: [
+      "**/*.test.{js,ts}",
+      "**/*.spec.{js,ts}",
+      "**/__tests__/**/*.{js,ts}",
+    ],
     plugins: {
       jest: jestPlugin,
     },
@@ -35,7 +43,7 @@ export default tseslint.config(
       ...jestPlugin.configs.recommended.rules,
     },
   },
-  
+
   // Validação de arquivos JSON
   {
     files: ["**/*.json"],
@@ -49,5 +57,5 @@ export default tseslint.config(
   },
 
   // Prettier deve ser sempre a última configuração do array
-  eslintConfigPrettier
+  eslintConfigPrettier,
 );
