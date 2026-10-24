@@ -7,6 +7,7 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:staged": "jest --passWithNoTests --findRelatedTests",
+    "test:push": "jest --passWithNoTests --coverage",
     "dev": "nodemon --exec tsx src/server.ts",
     "start": "tsx src/server.ts",
     "migrate": "dotenv -e ../.env -- node-pg-migrate -j sql -m migrations",
