@@ -8,9 +8,9 @@ const config: Config = {
   transform: {
     ".+\\.ts$": "ts-jest",
   },
-  /*moduleNameMapper: {
+  moduleNameMapper: {
     "@/(.*)": "<rootDir>/src/$1",
-  },*/
+  },
 };
 
 export default config;
