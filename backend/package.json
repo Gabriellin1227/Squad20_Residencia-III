@@ -3,17 +3,23 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
+  "scripts": { 
+
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:staged": "jest --passWithNoTests --findRelatedTests",
     "test:push": "jest --passWithNoTests --coverage",
+
+    "build": "tsc",
+    "start": "node dist/index.js",
     "dev": "nodemon --exec tsx src/server.ts",
-    "start": "tsx src/server.ts",
+    "start-server": "tsx src/server.ts",
+
     "migrate": "dotenv -e ../.env -- node-pg-migrate -j sql -m migrations",
     "migrate:create": "npm run migrate -- create",
     "migrate:up": "npm run migrate -- up",
     "migrate:down": "npm run migrate -- down",
+
     "husky:prepare": "husky init",
     "prepare": "husky"
   },
