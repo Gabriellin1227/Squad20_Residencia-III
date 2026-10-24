@@ -10,7 +10,9 @@
     "migrate": "dotenv -e ../.env -- node-pg-migrate -j sql -m migrations",
     "migrate:create": "npm run migrate -- create",
     "migrate:up": "npm run migrate -- up",
-    "migrate:down": "npm run migrate -- down"
+    "migrate:down": "npm run migrate -- down",
+    "husky:prepare": "husky init",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +31,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jest": "^29.17.0",
     "globals": "^17.13.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
