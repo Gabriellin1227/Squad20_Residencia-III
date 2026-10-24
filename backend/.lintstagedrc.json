@@ -1,6 +1,6 @@
 {
   "*.ts": [
-    "npm eslint 'src/**' --fix",
-    "npm prettier --check 'src/**'"
+    "eslint --fix --max-warnings=0",
+    "prettier --write"
   ]
 }
