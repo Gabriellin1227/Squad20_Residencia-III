@@ -1,25 +1,9 @@
-import { Request, Response } from "express";
 import vehicleService from "../service/vehicles/vehicleService";
+import { createHandler, idFrom } from "../utils/controllerUtils";
 
-const idFrom = (req: Request): string => {
-  const id = req.params.id;
-  return (Array.isArray(id) ? id[0] : id)?.trim() ?? "";
-};
-
-const handle =
-  (
-    operation: (req: Request) => Promise<{ message: unknown; status: number }>,
-  ) =>
-  async (req: Request, res: Response) => {
-    try {
-      const { message, status } = await operation(req);
-      res.status(status).json({ message });
-    } catch {
-      res
-        .status(500)
-        .json({ message: "Não foi possível concluir a operação de veículos" });
-    }
-  };
+const handle = createHandler(
+  "Não foi possível concluir a operação de manuntenções",
+);
 
 export default {
   getAllVehicles: handle(() => vehicleService.getAllVehicles()),

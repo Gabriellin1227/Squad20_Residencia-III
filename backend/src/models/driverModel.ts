@@ -1,9 +1,10 @@
 import { pool } from "../db";
-import { driverSchema, type DriverInput } from "../middleware/validations/schemas/driverSchema";
+import { type DriverInput } from "../middleware/validations/schemas/driverSchema";
 
 export interface Driver extends DriverInput {
   id: string;
   motorista_coringa: boolean;
+  validade_cnh: string;
   status: string;
   ativo: boolean;
   deletado_em: Date | null;
@@ -17,31 +18,56 @@ const columns = `id, nome, cpf, cnh, categoria,
   motorista_coringa, status, ativo, deletado_em, criado_em, atualizado_em`;
 
 const getAllDrivers = async (): Promise<Driver[]> => {
-  const result = await pool.query(`SELECT ${columns} FROM motoristas ORDER BY nome, id`);
+  const result = await pool.query(
+    `SELECT ${columns} FROM motoristas ORDER BY nome, id`,
+  );
   return result.rows;
 };
 
 const getDriverById = async (id: string): Promise<Driver | undefined> => {
-  const result = await pool.query(`SELECT ${columns} FROM motoristas WHERE id = $1`, [id]);
+  const result = await pool.query(
+    `SELECT ${columns} FROM motoristas WHERE id = $1`,
+    [id],
+  );
   return result.rows[0];
 };
 
 const createDriver = async (driver: DriverInput): Promise<Driver> => {
-  const result = await pool.query(`INSERT INTO motoristas
+  const result = await pool.query(
+    `INSERT INTO motoristas
     (nome, cpf, cnh, categoria, validade_cnh, motorista_coringa)
     VALUES ($1, $2, $3, $4, $5, $6) RETURNING ${columns}`,
-  [driver.nome, driver.cpf, driver.cnh, driver.categoria, driver.validade_cnh,
-    driver.motorista_coringa ?? false]);
+    [
+      driver.nome,
+      driver.cpf,
+      driver.cnh,
+      driver.categoria,
+      driver.validade_cnh,
+      driver.motorista_coringa ?? false,
+    ],
+  );
   return result.rows[0];
 };
 
-const updateDriver = async (id: string, driver: DriverInput): Promise<Driver | undefined> => {
-  const result = await pool.query(`UPDATE motoristas SET
+const updateDriver = async (
+  id: string,
+  driver: DriverInput,
+): Promise<Driver | undefined> => {
+  const result = await pool.query(
+    `UPDATE motoristas SET
     nome = $2, cpf = $3, cnh = $4, categoria = $5, validade_cnh = $6,
     motorista_coringa = COALESCE($7, motorista_coringa), atualizado_em = CURRENT_TIMESTAMP
     WHERE id = $1 RETURNING ${columns}`,
-  [id, driver.nome, driver.cpf, driver.cnh, driver.categoria, driver.validade_cnh,
-    driver.motorista_coringa ?? null]);
+    [
+      id,
+      driver.nome,
+      driver.cpf,
+      driver.cnh,
+      driver.categoria,
+      driver.validade_cnh,
+      driver.motorista_coringa ?? null,
+    ],
+  );
   return result.rows[0];
 };
 
@@ -50,4 +76,10 @@ const deleteDriver = async (id: string): Promise<boolean> => {
   return result.rowCount === 1;
 };
 
-export default { getAllDrivers, getDriverById, createDriver, updateDriver, deleteDriver };
+export default {
+  getAllDrivers,
+  getDriverById,
+  createDriver,
+  updateDriver,
+  deleteDriver,
+};
