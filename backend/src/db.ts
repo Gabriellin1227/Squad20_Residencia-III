@@ -3,15 +3,12 @@ import dotenv from "dotenv";
 import path from "node:path";
 
 dotenv.config({ path: path.resolve(process.cwd(), "../.env") });
+const result = dotenv.config({ path: path.resolve(process.cwd(), "../.env") });
+console.log("dotenv erro:", result.error?.message);
+console.log("DATABASE_URL carregada?", !!process.env.DATABASE_URL);
 
 export const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: String(process.env.DB_PASSWORD ?? ""),
-  port: Number(process.env.DB_PORT ?? 5432),
-  max: 20,
-  connectionTimeoutMillis: 2000,
+  connectionString: process.env.DATABASE_URL, // string do Neon
 });
 
 export default pool;

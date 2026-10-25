@@ -1,21 +1,31 @@
 import maintanceModel, { Maintance } from "../models/maintanceModel";
-import maintanceSchema, { maintanceIdSchema } from "../middleware/validations/schemas/maintanceSchema";
+import maintanceSchema, {
+  maintanceIdSchema,
+} from "../middleware/validations/schemas/maintanceSchema";
 
-const success = (message: unknown, status = 200) => ({ type: "success", message, status });
-const error = (message: string, status: number) => ({ type: "error", message, status });
+const success = (message: unknown, status = 200) => ({
+  type: "success",
+  message,
+  status,
+});
+const error = (message: string, status: number) => ({
+  type: "error",
+  message,
+  status,
+});
 const invalidId = (id: string) => !maintanceIdSchema.safeParse(id).success;
 const notFound = () => error("Vehicle not found", 404);
-
-const INTERVALO = 10000; // <--- editar possibilidade de generico dentro de um json, ou algo do genero
 
 const handleDuplicateKeyError = (cause: unknown) => {
   const dbError = cause as { code?: string; constraint?: string };
   if (dbError?.code !== "23505") throw cause;
-  if (dbError.constraint === "veiculos_key") return error("Veiculo já vinculado", 409);
+  if (dbError.constraint === "veiculos_key")
+    return error("Veiculo já vinculado", 409);
   throw cause;
 };
 
-const getAllMaintance = async () => success(((await maintanceModel.getAllMaintance())));
+const getAllMaintance = async () =>
+  success(await maintanceModel.getAllMaintance());
 
 const getMaintanceById = async (id: string) => {
   if (invalidId(id)) return error("Invalid maintance ID", 400);
@@ -27,8 +37,10 @@ const createMaintance = async (body: unknown) => {
   const validation = maintanceSchema.safeParse(body);
   if (!validation.success) return error(validation.error.message, 400);
   try {
-    const createdMaintance = await maintanceModel.createMaintance(validation.data as Maintance);
-    return success((createdMaintance), 201);
+    const createdMaintance = await maintanceModel.createMaintance(
+      validation.data as Maintance,
+    );
+    return success(createdMaintance, 201);
   } catch (cause) {
     return handleDuplicateKeyError(cause);
   }
@@ -40,15 +52,17 @@ const updateMaintance = async (id: string, body: unknown) => {
   if (validation.error) return error(validation.error.message, 400);
   try {
     const maintance = await maintanceModel.updateMaintance(id, validation.data);
-    return maintance ? success((maintance), 200): notFound()
+    return maintance ? success(maintance, 200) : notFound();
   } catch (cause) {
     return handleDuplicateKeyError(cause);
   }
-}
+};
 
 const deleteMaintance = async (id: string) => {
   if (invalidId(id)) return error("Invalid maintance ID", 400);
-  return await maintanceModel.deleteMaintance(id) ? success("Maintance deleted succesfully") : notFound();
+  return (await maintanceModel.deleteMaintance(id))
+    ? success("Maintance deleted succesfully")
+    : notFound();
 };
 
 export = {
@@ -56,5 +70,5 @@ export = {
   getMaintanceById,
   createMaintance,
   updateMaintance,
-  deleteMaintance
-}
+  deleteMaintance,
+};

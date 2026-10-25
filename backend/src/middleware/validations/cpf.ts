@@ -21,7 +21,11 @@ export const cpfSchema = z
 
 export type Cpf = z.infer<typeof cpfSchema>;
 
-export const validateCpf = (req: Request, res: Response, next: NextFunction) => {
+export const validateCpf = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   if (req.body?.cpf === undefined && req.method === "PUT") return next();
 
   const result = cpfSchema.safeParse(req.body?.cpf);

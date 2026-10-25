@@ -14,4 +14,3 @@ CREATE TABLE manutencoes(
     CONSTRAINT manutencoes_veiculo_id_fkey FOREIGN key(veiculo_id) REFERENCES veiculos(id) 
 );
 */
-

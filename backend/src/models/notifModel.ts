@@ -1,5 +1,5 @@
 import { pool } from "../db";
-import { notifSchema, type NotifInput } from "../middleware/validations/schemas/notifSchema"
+import { type NotifInput } from "../middleware/validations/schemas/notifSchema";
 
 export interface Notification extends NotifInput {
   id: string;
@@ -8,7 +8,7 @@ export interface Notification extends NotifInput {
   mensagem: string;
   lida: boolean;
   ativo: boolean;
-};
+}
 
 const columns = `
   id,
@@ -23,14 +23,19 @@ const columns = `
 `;
 
 const getAllNotif = async () => {
-  const result = await pool.query(`SELECT ${columns} FROM notificacoes ORDER BY criado_em, id`)
+  const result = await pool.query(
+    `SELECT ${columns} FROM notificacoes ORDER BY criado_em, id`,
+  );
   return result.rows[0];
-}
+};
 
 const getNotifById = async (id: string) => {
-  const result = await pool.query(`SELECT ${columns} FROM notificacoes WHERE = $1`, [id]);
+  const result = await pool.query(
+    `SELECT ${columns} FROM notificacoes WHERE = $1`,
+    [id],
+  );
   return result.rows[0];
-}
+};
 
 const createNotif = async (notification: Partial<Notification>) => {
   const result = await pool.query(
@@ -42,32 +47,32 @@ const createNotif = async (notification: Partial<Notification>) => {
       notification.tipo_alerta,
       notification.mensagem,
       notification.lida,
-      notification.veiculo_id
-    ]
+      notification.veiculo_id,
+    ],
   );
 
   return result.rows[0];
 };
 
-const updateNotif = async (id: string, notification: NotifInput): Promise<Notification | undefined> => {
+const updateNotif = async (
+  id: string,
+  notification: NotifInput,
+): Promise<Notification | undefined> => {
   const result = await pool.query(
     `UPDATE notificacoes
     SET tipo_alerta = $1, mensagem = $2, lida = $3
     WHERE id = $4
     RETURNING ${columns}`,
-    [
-      notification.tipo_alerta,
-      notification.mensagem,
-      notification.lida,
-      id
-    ]
+    [notification.tipo_alerta, notification.mensagem, notification.lida, id],
   );
 
   return result.rows[0];
 };
 
 const deleteNotif = async (id: string) => {
-  const result = await pool.query(`DELETE FROM notificacoes WHERE id = $1`, [id]);
+  const result = await pool.query(`DELETE FROM notificacoes WHERE id = $1`, [
+    id,
+  ]);
   return result.rowCount === 1;
 };
 
@@ -87,5 +92,5 @@ export default {
   getNotifById,
   createNotif,
   updateNotif,
-  deleteNotif
-}
+  deleteNotif,
+};
