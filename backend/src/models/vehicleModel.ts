@@ -1,7 +1,10 @@
 import { pool } from "../db";
 import { type VehicleInput } from "../middleware/validations/schemas/vehicleSchema";
 
-export type Vehicle = Omit<VehicleInput, "teto_gasto_mensal" | "deletado_em" | "criado_em" | "atualizado_em"> & {
+export type Vehicle = Omit<
+  VehicleInput,
+  "teto_gasto_mensal" | "deletado_em" | "criado_em" | "atualizado_em"
+> & {
   id: string;
   teto_gasto_mensal: number | null;
   status: string;
@@ -13,93 +16,95 @@ export type Vehicle = Omit<VehicleInput, "teto_gasto_mensal" | "deletado_em" | "
   ultimo_km_alertado: number;
 };
 
+export interface VehicleMaintenanceRow {
+  id: string;
+  placa: string;
+  quilometragem: number;
+  ultimo_km_alertado: number;
+  km_restantes: number;
+}
+
 const columns = `
-  id,
-  placa,
-  modelo,
-  tipo_combustivel,
-  capacidade_maxima,
-  teto_gasto_mensal,
-  status,
-  ativo,
-  deletado_em,
-  criado_em,
-  atualizado_em,
-  quilometragem,
-  ultimo_km_alertado
-`;
+    id,
+    placa,
+    modelo,
+    tipo_combustivel,
+    capacidade_maxima,
+    teto_gasto_mensal,
+    status,
+    ativo,
+    deletado_em,
+    criado_em,
+    atualizado_em,
+    quilometragem,
+    ultimo_km_alertado
+  `;
 
 const getAllVehicles = async () => {
-  const result = await pool.query(`SELECT ${columns} FROM veiculos ORDER BY modelo, id`);
+  const result = await pool.query(
+    `SELECT ${columns} FROM veiculos ORDER BY modelo, id`,
+  );
   return result.rows;
 };
 
 const getVehicleById = async (id: string) => {
-  const result = await pool.query(`SELECT ${columns} FROM veiculos WHERE id = $1`, [id]);
+  const result = await pool.query(
+    `SELECT ${columns} FROM veiculos WHERE id = $1`,
+    [id],
+  );
   return result.rows[0];
 };
 
-const getLastNotifKM = async (id: string) => {
-  const result = await pool.query(`SELECT id, quilometragem, ativo, ultimo_km_alertado FROM veiculos WHERE id = $1`, [id]);
-  return result.rows[0];
+const getNearMaintance = async (
+  intervalKM: number,
+  warnKM: number,
+): Promise<VehicleMaintenanceRow[]> => {
+  const result = await pool.query(
+    `SELECT id, placa, quilometragem, ultimo_km_alertado,
+      (ultimo_km_alertado + $1) - quilometragem AS km_restantes
+      FROM veiculos
+      WHERE quilometragem >= ultimo_km_alertado + $1 - $2`,
+    [intervalKM, warnKM],
+  );
+  return result.rows;
 };
-
-const updateLastNotifKM = async (id: string, vehicle: Partial<VehicleInput>) => {
-  const result = await pool.query(`
-    UPDATE veiculos 
-    SET ultimo_km_alertado = $1 
-    WHERE id = $2
-    RETURNING ${columns}`, 
-    [
-      vehicle.ultimo_km_alertado,
-      id
-    ]);
-
-    return result.rows[0];
-  
-};
-
-const vehicleRepo = {
-  searchForUpdate: (id: string) => (
-    getLastNotifKM(id)
-  ).then(r => r.rows[0]),
-
-  updateLastNotifKM: (id: string, km: number) => (
-    updateLastNotifKM(id, {ultimo_km_alertado: km})
-  )
-}
 
 const createVehicle = async (vehicle: Vehicle) => {
   const result = await pool.query(
-    `INSERT INTO veiculos (modelo, placa, tipo_combustivel, capacidade_maxima, teto_gasto_mensal) 
-    VALUES ($1, $2, $3, $4, $5) 
-    RETURNING ${columns}`,
-    [
-      vehicle.modelo, 
-      vehicle.placa, 
-      vehicle.tipo_combustivel, 
-      vehicle.capacidade_maxima, 
-      vehicle.teto_gasto_mensal ?? null
-    ]
-  );
-  
-  return result.rows[0];
-};
-
-const updateVehicle = async (id: string, vehicle: VehicleInput): Promise<Vehicle | undefined> => {
-  const result = await pool.query(
-    `UPDATE veiculos 
-    SET modelo = $1, placa = $2, tipo_combustivel = $3, capacidade_maxima = $4, teto_gasto_mensal = $5 
-    WHERE id = $6 
-    RETURNING ${columns}`,
+    `INSERT INTO veiculos (modelo, placa, tipo_combustivel, capacidade_maxima, teto_gasto_mensal, quilometragem, ultimo_km_alertado) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      RETURNING ${columns}`,
     [
       vehicle.modelo,
       vehicle.placa,
       vehicle.tipo_combustivel,
       vehicle.capacidade_maxima,
       vehicle.teto_gasto_mensal ?? null,
-      id
-    ]
+      vehicle.quilometragem,
+      vehicle.ultimo_km_alertado,
+    ],
+  );
+
+  return result.rows[0];
+};
+
+const updateVehicle = async (
+  id: string,
+  vehicle: VehicleInput,
+): Promise<Vehicle | undefined> => {
+  const result = await pool.query(
+    `UPDATE veiculos 
+      SET modelo = $1, placa = $2, tipo_combustivel = $3, capacidade_maxima = $4, teto_gasto_mensal = $5 
+      WHERE id = $6 
+      RETURNING ${columns}`,
+    [
+      vehicle.modelo,
+      vehicle.placa,
+      vehicle.tipo_combustivel,
+      vehicle.capacidade_maxima,
+      vehicle.teto_gasto_mensal ?? null,
+      id,
+    ],
   );
 
   return result.rows[0];
@@ -110,11 +115,11 @@ const deleteVehicle = async (id: string) => {
   return result.rowCount === 1;
 };
 
-export default { 
+export default {
   getAllVehicles,
   getVehicleById,
-  getLastNotifKM,
+  getNearMaintance,
   createVehicle,
   updateVehicle,
-  deleteVehicle
+  deleteVehicle,
 };
