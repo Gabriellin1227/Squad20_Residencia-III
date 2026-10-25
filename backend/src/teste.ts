@@ -1,7 +1,18 @@
-import { pool } from "./db";
+import { sendEmail } from "./service/email/mailerService";
+import { buildAlertDigest } from "./service/email/templates/alertDigest";
 
-pool
-  .query("SELECT current_database(), current_schema(), now()")
-  .then((r) => console.log("conexão ok:", r.rows))
-  .catch((e) => console.error("ERRO:", e.code, e.message))
-  .finally(() => pool.end());
+const { subject, html, text } = buildAlertDigest(
+  [
+    {
+      nome: "Micolau",
+      validade_cnh: "2026-10-19",
+      dias_restantes: -6,
+      severity: "critica",
+    },
+  ],
+  [{ placa: "ABC1D23", km_restantes: 200, severity: "aviso" }],
+);
+
+sendEmail({ to: "gabriel.lin@souunit.com.br", subject, html, text }).then(
+  console.log,
+);

@@ -15,7 +15,12 @@ interface sendEmailOptions {
   html?: string;
 }
 
-export const sendEmail = async ({ to, subject, text, html }: sendEmailOptions) => {
+export const sendEmail = async ({
+  to,
+  subject,
+  text,
+  html,
+}: sendEmailOptions) => {
   try {
     const info = await transporter.sendMail({
       from: '"SIVOF" <gdacostaaa@gmail.com>',
@@ -32,9 +37,3 @@ export const sendEmail = async ({ to, subject, text, html }: sendEmailOptions) =
     return { success: false, error };
   }
 };
-
-sendEmail({
-  to: "gabriel.lin@souunit.com.br",
-  subject: "Teste de envio servidor smtp",
-  text: "Mensagem de teste enviada com sucesso!"
-});

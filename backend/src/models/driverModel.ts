@@ -4,12 +4,18 @@ import { type DriverInput } from "../middleware/validations/schemas/driverSchema
 export interface Driver extends DriverInput {
   id: string;
   motorista_coringa: boolean;
-  validade_cnh: string;
   status: string;
   ativo: boolean;
   deletado_em: Date | null;
   criado_em: Date;
   atualizado_em: Date;
+}
+
+export interface DriverLicenseRow {
+  id: string;
+  nome: string;
+  validade_cnh: string;
+  dias_restantes: number;
 }
 
 // Keep PostgreSQL DATE as a calendar date, independent of the host timezone.
@@ -30,6 +36,21 @@ const getDriverById = async (id: string): Promise<Driver | undefined> => {
     [id],
   );
   return result.rows[0];
+};
+
+const getDriverWLicenseExp = async (
+  dayAhead: number,
+): Promise<DriverLicenseRow[]> => {
+  const result = await pool.query(
+    `SELECT id, nome, validade_cnh::text as validade_cnh,
+    (validade_cnh - CURRENT_DATE) as dias_restantes
+    FROM motoristas
+    WHERE ativo and deletado_em IS NULL
+    AND validade_cnh <= CURRENT_DATE + $1::int
+    ORDER BY validade_cnh`,
+    [dayAhead],
+  );
+  return result.rows;
 };
 
 const createDriver = async (driver: DriverInput): Promise<Driver> => {
@@ -79,6 +100,7 @@ const deleteDriver = async (id: string): Promise<boolean> => {
 export default {
   getAllDrivers,
   getDriverById,
+  getDriverWLicenseExp,
   createDriver,
   updateDriver,
   deleteDriver,

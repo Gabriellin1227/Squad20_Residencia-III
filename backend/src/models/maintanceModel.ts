@@ -1,5 +1,5 @@
 import { pool } from "../db";
-import { maintanceSchema, type MaintenaceInput } from "../middleware/validations/schemas/maintanceSchema";
+import { type MaintenaceInput } from "../middleware/validations/schemas/maintanceSchema";
 
 export interface Maintance extends MaintenaceInput {
   id: string;
@@ -9,7 +9,7 @@ export interface Maintance extends MaintenaceInput {
   data_fim: Date;
   custo: number;
   descricao: string;
-  status: "ativo" | "inativo"
+  status: "ativo" | "inativo";
 }
 
 const columns = `
@@ -26,14 +26,19 @@ const columns = `
 `;
 
 const getAllMaintance = async () => {
-  const result = await pool.query(`SELECT ${columns} FROM manuntencao ORDER BY status, id`);
+  const result = await pool.query(
+    `SELECT ${columns} FROM manuntencao ORDER BY status, id`,
+  );
   return result.rows;
-}
+};
 
 const getMaintancById = async (id: string) => {
-  const result = await pool.query(`SELECT ${columns} FROM manuntencao WHERE id = $1`, [id]);
+  const result = await pool.query(
+    `SELECT ${columns} FROM manuntencao WHERE id = $1`,
+    [id],
+  );
   return result.rows[0];
-} 
+};
 
 const createMaintance = async (maintance: Maintance) => {
   const result = await pool.query(
@@ -47,14 +52,17 @@ const createMaintance = async (maintance: Maintance) => {
       maintance.data_fim,
       maintance.custo,
       maintance.descricao,
-      maintance.status
-    ]
+      maintance.status,
+    ],
   );
 
   return result.rows[0];
 };
 
-const updateMaintance = async (id: string, maintance: MaintenaceInput): Promise<Maintance | undefined> => {
+const updateMaintance = async (
+  id: string,
+  maintance: MaintenaceInput,
+): Promise<Maintance | undefined> => {
   const result = await pool.query(
     `UPDATE manuntencao
     SET tipo_manuntencao = $1, tipo_manuntencao = $2, data_inicio = $3, data_fim = $4, custo = $5, descricao = $6, status = $7
@@ -67,15 +75,17 @@ const updateMaintance = async (id: string, maintance: MaintenaceInput): Promise<
       maintance.custo,
       maintance.descricao,
       maintance.status,
-      id
-    ]
+      id,
+    ],
   );
 
   return result.rows[0];
 };
 
 const deleteMaintance = async (id: string) => {
-  const result = await pool.query(`DELETE FROM manuntencao WHERE id = $1`, [id]);
+  const result = await pool.query(`DELETE FROM manuntencao WHERE id = $1`, [
+    id,
+  ]);
   return result.rowCount === 1;
 };
 
@@ -84,5 +94,5 @@ export default {
   getMaintancById,
   createMaintance,
   updateMaintance,
-  deleteMaintance
-}
+  deleteMaintance,
+};

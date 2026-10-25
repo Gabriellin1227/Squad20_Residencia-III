@@ -1,4 +1,4 @@
-import notifService from "../service/notifService";
+import notifService from "../service/notification/notifService";
 import { createHandler, idFrom } from "../utils/controllerUtils";
 
 const handle = createHandler(
