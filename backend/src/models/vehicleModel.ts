@@ -122,7 +122,17 @@ const deleteVehicle = async (id: string) => {
   return result.rowCount === 1;
 };
 
+const getVehicleTrips = async (id: string) => {
+  const result = await pool.query(
+    `SELECT id, status, data_inicio, data_fim, km_inicial, km_final
+    FROM viagens WHERE veiculo_id=$1 ORDER BY data_inicio DESC NULLS LAST, criado_em DESC, id`,
+    [id],
+  );
+  return result.rows;
+};
+
 export default {
+  getVehicleTrips,
   getAllVehicles,
   getVehicleById,
   getNearMaintance,

@@ -48,6 +48,12 @@ const getVehicleById = async (id: string) => {
   return vehicle ? success(checkVehicleAvailability(vehicle)) : notFound();
 };
 
+const getVehicleTrips = async (id: string) => {
+  if (invalidId(id)) return error("ID de veículo inválido", 400);
+  if (!(await vehicleModel.getVehicleById(id))) return notFound();
+  return success(await vehicleModel.getVehicleTrips(id));
+};
+
 const getLastNotifKM = async (id: string) => {
   if (invalidId(id)) return error("Invalid vehicle ID", 400);
   const vehicle = await vehicleModel.getVehicleById(id);
@@ -88,6 +94,7 @@ const deleteVehicle = async (id: string) => {
 
 export = {
   getAllVehicles,
+  getVehicleTrips,
   getVehicleById,
   getLastNotifKM,
   createVehicle,

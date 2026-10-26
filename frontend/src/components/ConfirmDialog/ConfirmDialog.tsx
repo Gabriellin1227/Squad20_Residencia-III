@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { Button } from '@/components/Button'
 import styles from './ConfirmDialog.module.scss'
 
@@ -7,7 +7,8 @@ export interface ConfirmDialogProps {
   title: string
   description: string
   confirmLabel?: string
-  cancelLabel?: string
+  cancelLabel?: string | null
+  children?: ReactNode
   isDestructive?: boolean
   onConfirm: () => void
   onCancel: () => void
@@ -19,6 +20,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel = 'Confirmar',
+  children,
   cancelLabel = 'Cancelar',
   isDestructive = false,
   onConfirm,
@@ -44,7 +46,7 @@ export function ConfirmDialog({
   return (
     <dialog
       ref={dialogRef}
-      className={styles.dialog}
+      className={`${styles.dialog} ${children ? styles.withContent : ''}`}
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       onCancel={(event) => {
@@ -58,10 +60,13 @@ export function ConfirmDialog({
       <p id={descriptionId} className={styles.description}>
         {description}
       </p>
+      {children && <div className={styles.content}>{children}</div>}
       <div className={styles.buttons}>
-        <Button variant="secondary" onClick={onCancel}>
-          {cancelLabel}
-        </Button>
+        {cancelLabel && (
+          <Button variant="secondary" onClick={onCancel}>
+            {cancelLabel}
+          </Button>
+        )}
         <Button variant={isDestructive ? 'danger' : 'primary'} onClick={onConfirm}>
           {confirmLabel}
         </Button>

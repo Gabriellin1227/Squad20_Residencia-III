@@ -31,6 +31,22 @@ export async function getVehicleDetails(id: string): Promise<VehicleDetails> {
   const row = (
     await api<{ message: VehicleResponse }>(`/vehicles/${encodeURIComponent(id)}`)
   ).message
+  interface TripRow {
+    id: string
+    status: string
+    data_inicio: string | null
+    km_inicial: number | null
+    km_final: number | null
+  }
+  let tripsError: string | undefined
+  const tripRows = await api<{ message: TripRow[] }>(
+    `/vehicles/${encodeURIComponent(id)}/trips`,
+  )
+    .then((response) => response.message)
+    .catch(() => {
+      tripsError = 'Não foi possível carregar o histórico de viagens.'
+      return [] as TripRow[]
+    })
   const user = await currentUser()
   const canReadMaintenance = user.permissoes.includes('manutencoes:ler')
   interface MaintenanceRow {
@@ -47,9 +63,21 @@ export async function getVehicleDetails(id: string): Promise<VehicleDetails> {
     : []
   return {
     vehicle: toVehicle(row),
-    trips: [],
+    trips: tripRows.map((trip) => ({
+      id: trip.id,
+      code: trip.id.slice(0, 8),
+      startedAt: trip.data_inicio,
+      status: trip.status,
+      mileageStart: trip.km_inicial,
+      mileageEnd: trip.km_final,
+    })),
+    ...(tripsError ? { tripsError } : {}),
     checklist: [],
-    availability: { trips: false, checklist: false, maintenance: canReadMaintenance },
+    availability: {
+      trips: !tripsError,
+      checklist: false,
+      maintenance: canReadMaintenance,
+    },
     maintenances: history
       .filter((m) => m.veiculo_id === id)
       .map((m) => ({

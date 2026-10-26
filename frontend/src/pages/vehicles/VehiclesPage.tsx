@@ -55,6 +55,10 @@ export function VehiclesPage() {
     return (
       <VehicleForm
         vehicle={editingVehicle}
+        onBackToList={() => {
+          setEditingVehicle(undefined)
+          setSelectedVehicleId(null)
+        }}
         onCancel={() => setEditingVehicle(undefined)}
         onSave={() => {
           setEditingVehicle(undefined)
