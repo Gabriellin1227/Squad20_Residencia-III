@@ -147,7 +147,8 @@ function PasswordDialog({
       toast.success('Senha alterada com sucesso.')
       close()
     } catch (cause) {
-      const message = cause instanceof Error ? cause.message : 'Não foi possível alterar a senha.'
+      const message =
+        cause instanceof Error ? cause.message : 'Não foi possível alterar a senha.'
       toast.error(message)
     }
   }
@@ -260,7 +261,11 @@ export default function ProfilePage() {
 
         <section className={styles.profileCard} aria-label="Informações do usuário">
           <div className={styles.avatar}>
-            {photo ? <img src={photo} alt="Foto de perfil" /> : (user?.nome ?? 'U').slice(0, 2).toUpperCase()}
+            {photo ? (
+              <img src={photo} alt="Foto de perfil" />
+            ) : (
+              (user?.nome ?? 'U').slice(0, 2).toUpperCase()
+            )}
           </div>
           <div className={styles.profileInfo}>
             <h2>{user?.nome ?? 'Usuário'}</h2>
