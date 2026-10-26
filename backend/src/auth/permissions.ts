@@ -1,0 +1,26 @@
+export const PERMISSIONS = [
+  "perfis:ler",
+  "perfis:gerenciar",
+  "usuarios:gerenciar-perfis",
+  "usuarios:gerenciar",
+  "usuarios:delegar-permissoes",
+  "veiculos:ler",
+  "veiculos:gerenciar",
+  "motoristas:ler",
+  "motoristas:gerenciar",
+  "manutencoes:ler",
+  "manutencoes:gerenciar",
+  "notificacoes:ler",
+  "notificacoes:gerenciar",
+  "solicitacoes:criar",
+  "solicitacoes:ler-proprias",
+  "viagens:ler-proprias",
+] as const;
+export const DELEGABLE_PERMISSIONS = [
+  "veiculos:ler",
+  "veiculos:gerenciar",
+  "motoristas:ler",
+  "motoristas:gerenciar",
+  "manutencoes:ler",
+  "manutencoes:gerenciar",
+] as const;

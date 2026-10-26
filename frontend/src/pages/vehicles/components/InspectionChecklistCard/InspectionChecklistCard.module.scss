@@ -1,0 +1,33 @@
+@use '../../../../styles/tokens' as *;
+@use '../../../../styles/mixins' as *;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $font-size-small;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.iconOk {
+  color: $color-success;
+}
+
+.iconPending {
+  color: $color-danger;
+}
+
+.srOnly {
+  @include visually-hidden;
+}

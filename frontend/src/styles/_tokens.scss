@@ -1,0 +1,91 @@
+// Paleta principal do projeto + tokens do layout de autenticação
+$color-navy: #0b2545;
+$color-navy-mid: #12345c;
+$color-primary: #1f5fad;
+$color-primary-hover: #194f91;
+$color-primary-pressed: #163d6d;
+$color-primary-dark: #0b2545;
+$color-on-primary: #ffffff;
+$color-on-navy: #ffffff;
+$color-on-navy-muted: #b7c5d4;
+$color-eyebrow: #9ec4e8;
+$color-accent-yellow: #e8b920;
+$color-surface: #f7f8fc;
+$color-card: #ffffff;
+$color-background: #f5f7fa;
+$color-text: #1f2937;
+$color-text-muted: #5b6575;
+$color-text-label: #4b5563;
+$color-placeholder: #9ca3af;
+$color-border: #dde3ec;
+$color-border-subtle: #eef0f4;
+$color-error: #b42318;
+$color-danger: #c62828;
+$color-danger-soft: #fdecec;
+$color-success: #2e7d32;
+$color-success-soft: #e8f5e9;
+$color-warning: #f2b705;
+$color-warning-soft: #fdf3cf;
+$color-warning-text: #7a5b00;
+$color-focus: #1f5fad;
+$color-primary-soft: #e3edf9;
+$color-table-header: #eef3fa;
+$color-sidebar-text: #c9d3e3;
+$color-sidebar-hover: #14335c;
+$color-logout: #ff8a80;
+$color-gradient-green: #2d8a3e;
+$color-gradient-blue: #2563b0;
+$color-gradient-yellow: #e0b117;
+
+$space-0: 0;
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 1rem;
+$space-4: 1.5rem;
+$space-5: 3rem;
+$space-gutter-xs: 0.75rem;
+
+$radius-sm: 0.5rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+$radius-xl: 1.5rem;
+$radius-pill: 999px;
+$radius-full: 999px;
+
+$shadow-card:
+  0 12px 40px rgba(15, 23, 42, 0.08),
+  0 1px 2px rgba(11, 37, 69, 0.06),
+  0 1px 3px rgba(11, 37, 69, 0.04);
+$shadow-focus: 0 0 0 4px rgba(37, 99, 176, 0.18);
+$shadow-drawer: 4px 0 24px rgba(11, 37, 69, 0.24);
+
+$font-family:
+  'Inter',
+  system-ui,
+  -apple-system,
+  'Segoe UI',
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  sans-serif;
+$font-size-h1: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+$font-size-h2: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+$font-size-h3: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+$font-size-h4: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+$font-size-body: 1rem;
+$font-size-small: 0.875rem;
+$font-size-xsmall: 0.75rem;
+$line-height-tight: 1.1;
+$line-height-heading: 1.2;
+$line-height-body: 1.5;
+$line-height-small: 1.4;
+
+$touch-target: 2.75rem;
+$touch-min: 2.75rem;
+$list-item-height: 3rem;
+$input-height: 3rem;
+$card-max-width: 31.25rem;
+
+$sidebar-width: 15rem;
+$content-max-width: 82.5rem;
+$transition-fast: 150ms ease;

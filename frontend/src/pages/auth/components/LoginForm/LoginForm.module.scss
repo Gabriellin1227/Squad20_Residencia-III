@@ -1,0 +1,80 @@
+@use '../../../../styles/tokens' as *;
+@use '../../../../styles/breakpoints' as *;
+
+.card {
+  width: 100%;
+  max-width: $card-max-width;
+  padding: 1.25rem 1rem 1.5rem;
+  background-color: $color-card;
+  border: 1px solid $color-border-subtle;
+  border-radius: 1rem;
+  box-shadow: none;
+
+  @include up(sm) {
+    margin-inline: auto;
+    padding: $space-4;
+    border-radius: $radius-xl;
+  }
+
+  @include up(md) {
+    padding: 2rem;
+    box-shadow: $shadow-card;
+  }
+
+  @include up(lg) {
+    padding: $space-5 2.9375rem;
+    box-shadow: $shadow-card;
+  }
+}
+
+.header {
+  margin-bottom: $space-4;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  font-weight: 400;
+  line-height: $line-height-heading;
+  color: $color-text;
+}
+
+.subtitle {
+  margin: $space-2 0 0;
+  font-size: 1rem;
+  line-height: $line-height-body;
+  color: $color-text-muted;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.formError {
+  margin: 0;
+  font-size: 0.875rem;
+  color: $color-error;
+}
+
+.forgot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: $touch-min;
+  margin-top: $space-2;
+  font-size: 0.875rem;
+  color: $color-primary;
+  text-decoration: none;
+
+  @media (hover: hover) {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &:focus-visible {
+    border-radius: $radius-sm;
+  }
+}

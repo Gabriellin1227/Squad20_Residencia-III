@@ -1,0 +1,34 @@
+@use '../../../../styles/tokens' as *;
+@use '../../../../styles/mixins' as *;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+}
+
+.code {
+  font-size: $font-size-small;
+  font-weight: 600;
+}
+
+.route,
+.time {
+  font-size: $font-size-xsmall;
+  line-height: $line-height-small;
+  color: $color-text-muted;
+}
+
+.srOnly {
+  @include visually-hidden;
+}
+
+.empty {
+  font-size: $font-size-small;
+  color: $color-text-muted;
+}

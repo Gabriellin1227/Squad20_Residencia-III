@@ -1,0 +1,254 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/breakpoints' as *;
+
+// Base (xs): barra superior fixa com menu recolhível.
+// lg+: a mesma estrutura vira uma sidebar fixa à esquerda.
+
+.layout {
+  min-height: 100dvh;
+
+  @include up(lg) {
+    display: grid;
+    grid-template-columns: $sidebar-width minmax(0, 1fr);
+  }
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  color: $color-surface;
+  background-color: $color-primary-dark;
+
+  @include up(lg) {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+  }
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+  padding: $space-2 0.75rem;
+  padding-top: calc(#{$space-2} + env(safe-area-inset-top));
+
+  @include up(lg) {
+    padding: $space-4 $space-3;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.logo {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: $font-size-small;
+  font-weight: 700;
+  background-color: $color-primary;
+  border-radius: 50%;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.brandName {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.brandTagline {
+  font-size: $font-size-xsmall;
+  line-height: $line-height-small;
+  color: $color-sidebar-text;
+}
+
+.menuToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: $touch-target;
+  height: $touch-target;
+  padding: 0;
+  color: $color-surface;
+  background: none;
+  border: 0;
+  border-radius: $radius-md;
+
+  @include hover {
+    background-color: $color-sidebar-hover;
+  }
+
+  &:focus-visible {
+    outline-color: $color-warning;
+  }
+
+  @include up(lg) {
+    display: none;
+  }
+}
+
+// Painel (navegação + usuário): recolhido no mobile.
+.panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: $space-4;
+  height: calc(100dvh - 3.75rem - env(safe-area-inset-top)); // 3.75rem = altura da barra
+  padding: $space-2 0.75rem;
+  padding-bottom: calc(#{$space-3} + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  background-color: $color-primary-dark;
+  box-shadow: $shadow-drawer;
+
+  @include up(lg) {
+    display: flex;
+    position: static;
+    flex: 1;
+    height: auto;
+    padding: $space-2 $space-2 $space-4;
+    box-shadow: none;
+  }
+}
+
+.panelOpen {
+  display: flex;
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: $list-item-height;
+  padding: 0 $space-3;
+  font-size: $font-size-small;
+  color: $color-sidebar-text;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-left: 4px solid transparent;
+  border-radius: $radius-md;
+  text-decoration: none;
+
+  @include hover {
+    color: $color-surface;
+    background-color: $color-sidebar-hover;
+  }
+
+  &:focus-visible {
+    outline-color: $color-warning;
+    outline-offset: -2px;
+  }
+
+  &[aria-disabled='true'] {
+    cursor: default;
+  }
+
+  @include up(lg) {
+    min-height: $touch-target;
+  }
+}
+
+.navItemActive {
+  font-weight: 600;
+  color: $color-surface;
+  background-color: $color-primary;
+  border-left-color: $color-warning;
+
+  @include hover {
+    background-color: $color-primary;
+  }
+}
+
+.userBox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: $space-2 $space-3;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  background-color: $color-sidebar-text;
+  border-radius: 50%;
+}
+
+.userText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.userName {
+  font-size: $font-size-small;
+  font-weight: 600;
+}
+
+.logout {
+  min-width: $touch-target;
+  min-height: $touch-target;
+  padding: 0;
+  font-size: $font-size-small;
+  color: $color-logout;
+  text-align: left;
+  background: none;
+  border: 0;
+
+  @include hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline-color: $color-warning;
+  }
+}
+
+.main {
+  min-width: 0;
+  padding: $space-4 0.75rem;
+  padding-bottom: calc(#{$space-5} + env(safe-area-inset-bottom));
+
+  @include up(md) {
+    padding: $space-4;
+  }
+
+  @include up(lg) {
+    padding: $space-5 $space-4;
+  }
+
+  @include up(xl) {
+    padding-inline: $space-5;
+  }
+}
+
+.content {
+  max-width: $content-max-width;
+  margin-inline: auto;
+}

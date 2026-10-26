@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "${DB_PORT}:5432"
+      - "0.0.0.0:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -31,7 +31,7 @@ services:
     container_name: node_backend
     restart: always
     ports:
-      - "${BACKEND_PORT}:3000"
+      - "${BACKEND_PORT:-3000}:3000"
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -39,30 +39,17 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
+    # Executa o script de migration e depois inicia o servidor Node
+    command: sh -c "npm run migrate:up && npm run dev"
     depends_on:
       db:
         condition: service_healthy
     networks:
       - app_network
 
-  # Serviço do Frontend (React)
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: react_frontend
-    restart: always
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    networks:
-      - app_network
-
 # Volumes para persistência de dados
 volumes:
-  - postgres_data:/var/lib/postgresql/data
-  - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  postgres_data:
 
 # Rede interna
 networks:

@@ -1,0 +1,37 @@
+@use '../../styles/tokens' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-1 0.625rem;
+  border-radius: $radius-pill;
+  font-size: $font-size-xsmall;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.success {
+  color: $color-success;
+  background-color: $color-success-soft;
+}
+
+.warning {
+  color: $color-warning-text;
+  background-color: $color-warning-soft;
+}
+
+.info {
+  color: $color-primary;
+  background-color: $color-primary-soft;
+}
+
+.danger {
+  color: $color-danger;
+  background-color: $color-danger-soft;
+}
+
+.neutral {
+  color: $color-text-muted;
+  background-color: $color-background;
+}

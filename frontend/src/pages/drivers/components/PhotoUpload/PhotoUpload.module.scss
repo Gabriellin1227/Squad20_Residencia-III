@@ -1,0 +1,24 @@
+@use '../../../../styles/tokens' as *;
+@use '../../../../styles/mixins' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
+}
+
+.input {
+  @include visually-hidden;
+}
+
+.hint {
+  font-size: $font-size-xsmall;
+  color: $color-text-muted;
+}
+
+.error {
+  font-size: $font-size-small;
+  color: $color-error;
+  text-align: center;
+}

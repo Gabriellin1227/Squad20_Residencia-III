@@ -1,0 +1,90 @@
+@use '../../../../styles/tokens' as *;
+@use '../../../../styles/breakpoints' as *;
+
+.form {
+  min-width: 0;
+}
+
+// xs: foto acima dos campos; lg: foto em coluna à esquerda.
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $space-4;
+
+  @include up(lg) {
+    grid-template-columns: 9rem minmax(0, 1fr);
+  }
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  min-width: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: $space-3;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $color-primary;
+}
+
+.grid2,
+.grid3 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $space-3;
+}
+
+.grid2 {
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.grid3 {
+  @include up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  @include up(md) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+.status {
+  @include up(md) {
+    width: 100%;
+    max-width: 24rem;
+  }
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-2;
+
+  @include up(md) {
+    grid-template-columns: repeat(2, auto);
+  }
+}

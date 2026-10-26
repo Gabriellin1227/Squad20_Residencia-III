@@ -1,0 +1,70 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+}
+
+.title {
+  font-weight: 500;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.subtitle {
+  font-size: $font-size-small;
+  color: $color-text-muted;
+}
+
+// xs: cards empilhados em uma coluna.
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $space-3;
+
+  > * {
+    min-width: 0;
+  }
+
+  // md: duas colunas; o checklist ocupa a linha inteira.
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $space-4;
+
+    > :last-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  // lg: três colunas, como no protótipo (hero ocupa duas).
+  @include up(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    > :last-child {
+      grid-column: auto;
+    }
+  }
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    flex: 1;
+  }
+
+  @include up(lg) {
+    grid-column: span 2;
+  }
+}
