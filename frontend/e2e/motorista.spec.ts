@@ -1,7 +1,12 @@
 import { test, expect } from '@playwright/test'
+import { mockApi, signIn } from './auth'
+
+test.beforeEach(async ({ page }) => {
+  await mockApi(page)
+})
 
 test('app do motorista abre na raiz com a barra de abas', async ({ page }) => {
-  await page.goto('/')
+  await signIn(page)
 
   await expect(
     page.getByRole('navigation', { name: 'Navegação do motorista' }),
