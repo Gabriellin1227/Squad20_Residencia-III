@@ -102,5 +102,8 @@ jobs:
           fi
           npm run build:gestor
           node -e 'require("node:fs").writeFileSync("dist/gestor/vercel.json",JSON.stringify({framework:null,rewrites:[{source:"/(.*)",destination:"/index.html"}]}))'
-          npm exec --yes --package=vercel@65.2.0 -- vercel deploy dist/gestor --prod --yes --token="$VERCEL_TOKEN" > deployment-url.txt
+          publish_dir=$(mktemp -d)
+          cp -R dist/gestor/. "$publish_dir/"
+          cd "$publish_dir"
+          npm exec --yes --package=vercel@65.2.0 -- vercel deploy --prod --yes --token="$VERCEL_TOKEN" > deployment-url.txt
           cat deployment-url.txt >> "$GITHUB_STEP_SUMMARY"
