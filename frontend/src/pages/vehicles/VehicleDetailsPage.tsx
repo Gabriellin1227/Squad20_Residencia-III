@@ -1,5 +1,7 @@
+import { Breadcrumb } from '@/components/Breadcrumb'
 import type { Vehicle } from './types'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Button } from '@/components/Button'
 import { StateMessage } from '@/components/StateMessage'
 import { InspectionChecklistCard } from './components/InspectionChecklistCard'
@@ -21,6 +23,7 @@ export function VehicleDetailsPage({
   onBack,
   onEdit,
 }: VehicleDetailsPageProps) {
+  const [historyOpen, setHistoryOpen] = useState(false)
   const detailsRequest = useVehicleDetails(vehicleId)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const details = detailsRequest.status === 'success' ? detailsRequest.data : null
@@ -59,6 +62,12 @@ export function VehicleDetailsPage({
       </div>
 
       <header className={styles.header}>
+        <Breadcrumb
+          items={[
+            { label: 'Veículos', to: '/veiculos', onClick: onBack },
+            { label: 'Detalhes' },
+          ]}
+        />
         <h1 ref={headingRef} tabIndex={-1} className={styles.title}>
           Detalhes do Veículo{details && ` — ${details.vehicle.plate}`}
         </h1>
@@ -92,16 +101,38 @@ export function VehicleDetailsPage({
             <VehicleHeroCard vehicle={details.vehicle} />
           </div>
           <VehicleSummaryCard vehicle={details.vehicle} onEdit={handleEdit} />
-          {details.availability?.trips !== false && (
-            <TripHistoryCard trips={details.trips} />
-          )}
+          <TripHistoryCard
+            trips={details.trips}
+            error={
+              details.tripsError ??
+              (details.availability?.trips === false
+                ? 'Histórico de viagens indisponível.'
+                : undefined)
+            }
+            onRetry={detailsRequest.reload}
+            onViewAll={() => setHistoryOpen(true)}
+          />
           {details.availability?.maintenance !== false && (
             <MaintenanceCard maintenances={details.maintenances} />
           )}
-          {details.availability?.checklist !== false && (
-            <InspectionChecklistCard items={details.checklist} />
-          )}
+          <InspectionChecklistCard
+            items={details.checklist}
+            unavailable={details.availability?.checklist === false}
+          />
         </div>
+      )}
+      {details && (
+        <ConfirmDialog
+          isOpen={historyOpen}
+          title="Histórico de viagens"
+          description={`Veículo ${details.vehicle.plate}`}
+          confirmLabel="Fechar"
+          cancelLabel={null}
+          onConfirm={() => setHistoryOpen(false)}
+          onCancel={() => setHistoryOpen(false)}
+        >
+          <TripHistoryCard trips={details.trips} />
+        </ConfirmDialog>
       )}
     </div>
   )

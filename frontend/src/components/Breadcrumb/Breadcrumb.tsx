@@ -5,6 +5,8 @@ export interface BreadcrumbItem {
   label: string
   /** Sem `to`, o item é o local atual. */
   to?: string
+  /** Para telas filhas que compartilham a rota com a lista. */
+  onClick?: () => void
 }
 
 export interface BreadcrumbProps {
@@ -18,7 +20,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
         {items.map((item) => (
           <li key={item.label} className={styles.item}>
             {item.to ? (
-              <Link to={item.to} className={styles.link}>
+              <Link to={item.to} onClick={item.onClick} className={styles.link}>
                 {item.label}
               </Link>
             ) : (

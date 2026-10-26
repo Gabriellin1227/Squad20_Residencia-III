@@ -5,6 +5,11 @@ import vehicleController from "../controller/vehicleController";
 const router = Router();
 
 router.get("/", authorize("veiculos:ler"), vehicleController.getAllVehicles);
+router.get(
+  "/:id/trips",
+  authorize("veiculos:ler"),
+  vehicleController.getVehicleTrips,
+);
 router.get("/:id", authorize("veiculos:ler"), vehicleController.getVehicleById);
 router.get(
   "/km/:id",

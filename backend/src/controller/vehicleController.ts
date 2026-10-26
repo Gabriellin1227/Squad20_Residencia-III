@@ -6,6 +6,7 @@ const handle = createHandler(
 );
 
 export default {
+  getVehicleTrips: handle((req) => vehicleService.getVehicleTrips(idFrom(req))),
   getAllVehicles: handle(() => vehicleService.getAllVehicles()),
   getVehicleById: handle((req) => vehicleService.getVehicleById(idFrom(req))),
   getLastNotifKM: handle((req) => vehicleService.getLastNotifKM(idFrom(req))),

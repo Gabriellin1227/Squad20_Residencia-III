@@ -9,6 +9,8 @@ export interface VehicleResponse {
   quilometragem?: number
   capacidade_maxima: number
   status: string
+  frota?: Fleet | null
+  exclusivo_svo?: boolean
   ativo: boolean
 }
 
@@ -22,7 +24,8 @@ export interface VehicleExtraInfoResponse {
 
 export type VehicleStatus = 'ativo' | 'manutencao' | 'em_viagem' | 'inativo'
 
-export type Fleet = 'Administrativa' | 'Assistencial' | 'Operacional' | 'Não informada'
+export type Fleet =
+  'Administrativa' | 'Assistencial' | 'Operacional' | 'SVO' | 'Não informada'
 
 export interface Vehicle {
   id: string
@@ -36,15 +39,19 @@ export interface Vehicle {
   lastAlertedKm?: number
   monthlyCap?: number | null
   fleet: Fleet
+  exclusiveSvo?: boolean
   nextInspection: string // "AAAA-MM"
 }
 
 export interface Trip {
   id: string
   code: string
-  origin: string
-  destination: string
-  startedAt: string // ISO 8601
+  origin?: string
+  destination?: string
+  startedAt: string | null // ISO 8601; sem data para viagens ainda não iniciadas
+  status?: string
+  mileageStart?: number | null
+  mileageEnd?: number | null
 }
 
 export type MaintenanceType = 'preventiva' | 'corretiva' | 'impeditiva'
@@ -68,6 +75,7 @@ export interface VehicleDetails {
   availability?: { trips: boolean; checklist: boolean; maintenance: boolean }
   vehicle: Vehicle
   trips: Trip[]
+  tripsError?: string
   maintenances: Maintenance[]
   checklist: InspectionItem[]
 }

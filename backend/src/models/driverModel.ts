@@ -21,7 +21,9 @@ export interface DriverLicenseRow {
 // Keep PostgreSQL DATE as a calendar date, independent of the host timezone.
 const columns = `id, nome, cpf, cnh, categoria,
   to_char(validade_cnh, 'YYYY-MM-DD') AS validade_cnh,
-  motorista_coringa, status, ativo, deletado_em, criado_em, atualizado_em`;
+  motorista_coringa, frota, status, ativo, deletado_em, criado_em, atualizado_em,
+  ARRAY(SELECT v.placa FROM motoristas_veiculos mv JOIN veiculos v ON v.id = mv.veiculo_id
+    WHERE mv.motorista_id = motoristas.id ORDER BY v.placa) AS veiculos`;
 
 const getAllDrivers = async (): Promise<Driver[]> => {
   const result = await pool.query(
@@ -53,44 +55,91 @@ const getDriverWLicenseExp = async (
   return result.rows;
 };
 
-const createDriver = async (driver: DriverInput): Promise<Driver> => {
-  const result = await pool.query(
-    `INSERT INTO motoristas
-    (nome, cpf, cnh, categoria, validade_cnh, motorista_coringa)
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING ${columns}`,
-    [
-      driver.nome,
-      driver.cpf,
-      driver.cnh,
-      driver.categoria,
-      driver.validade_cnh,
-      driver.motorista_coringa ?? false,
-    ],
-  );
-  return result.rows[0];
+// Cadastro e vínculos são atômicos: qualquer incompatibilidade desfaz tudo.
+const saveDriver = async (
+  driver: DriverInput,
+  id?: string,
+): Promise<Driver | undefined> => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query("SELECT pg_advisory_xact_lock(203734441, 20)");
+    const result = id
+      ? await client.query(
+          `UPDATE motoristas SET nome=$2, cpf=$3, cnh=$4,
+          categoria=$5, validade_cnh=$6, motorista_coringa=COALESCE($7,motorista_coringa),
+          frota=CASE WHEN $9 THEN $8 ELSE frota END, atualizado_em=NOW()
+          WHERE id=$1 RETURNING id`,
+          [
+            id,
+            driver.nome,
+            driver.cpf,
+            driver.cnh,
+            driver.categoria,
+            driver.validade_cnh,
+            driver.motorista_coringa ?? null,
+            driver.frota ?? null,
+            driver.frota !== undefined,
+          ],
+        )
+      : await client.query(
+          `INSERT INTO motoristas (nome,cpf,cnh,categoria,validade_cnh,motorista_coringa,frota)
+          VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
+          [
+            driver.nome,
+            driver.cpf,
+            driver.cnh,
+            driver.categoria,
+            driver.validade_cnh,
+            driver.motorista_coringa ?? false,
+            driver.frota ?? null,
+          ],
+        );
+    const savedId = result.rows[0]?.id;
+    if (!savedId) {
+      await client.query("ROLLBACK");
+      return undefined;
+    }
+    if (driver.veiculos !== undefined) {
+      const vehicles = await client.query(
+        `SELECT id FROM veiculos WHERE placa = ANY($1::text[]) AND ativo AND deletado_em IS NULL`,
+        [driver.veiculos],
+      );
+      if (vehicles.rows.length !== driver.veiculos.length) {
+        throw Object.assign(
+          new Error("Um ou mais veículos não existem ou estão inativos"),
+          { code: "INVALID_VEHICLES" },
+        );
+      }
+      await client.query(
+        "DELETE FROM motoristas_veiculos WHERE motorista_id=$1",
+        [savedId],
+      );
+      await client.query(
+        `INSERT INTO motoristas_veiculos (motorista_id,veiculo_id)
+        SELECT $1, id FROM veiculos WHERE placa = ANY($2::text[])`,
+        [savedId, driver.veiculos],
+      );
+    }
+    const saved = await client.query(
+      `SELECT ${columns} FROM motoristas WHERE id=$1`,
+      [savedId],
+    );
+    await client.query("COMMIT");
+    return saved.rows[0];
+  } catch (cause) {
+    await client.query("ROLLBACK");
+    throw cause;
+  } finally {
+    client.release();
+  }
 };
-
+const createDriver = async (driver: DriverInput): Promise<Driver> =>
+  (await saveDriver(driver))!;
 const updateDriver = async (
   id: string,
   driver: DriverInput,
-): Promise<Driver | undefined> => {
-  const result = await pool.query(
-    `UPDATE motoristas SET
-    nome = $2, cpf = $3, cnh = $4, categoria = $5, validade_cnh = $6,
-    motorista_coringa = COALESCE($7, motorista_coringa), atualizado_em = CURRENT_TIMESTAMP
-    WHERE id = $1 RETURNING ${columns}`,
-    [
-      id,
-      driver.nome,
-      driver.cpf,
-      driver.cnh,
-      driver.categoria,
-      driver.validade_cnh,
-      driver.motorista_coringa ?? null,
-    ],
-  );
-  return result.rows[0];
-};
+): Promise<Driver | undefined> => saveDriver(driver, id);
 
 const deleteDriver = async (id: string): Promise<boolean> => {
   const result = await pool.query("DELETE FROM motoristas WHERE id = $1", [id]);

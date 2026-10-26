@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { fleetSchema } from "./fleetSchema";
 
 export const vehicleSchema = z
   .object({
@@ -16,6 +17,8 @@ export const vehicleSchema = z
       .min(0, "Teto de gasto não pode ser negativo")
       .optional(),
 
+    frota: fleetSchema.nullable().optional(),
+    exclusivo_svo: z.boolean().optional(),
     status: z.enum(["ativo", "inativo"]).optional(),
     ativo: z.boolean().optional(),
 
@@ -28,7 +31,11 @@ export const vehicleSchema = z
       .int()
       .nonnegative("KM não pode ser negativo"),
   })
-  .strict();
+  .strict()
+  .refine((value) => !value.exclusivo_svo || value.frota === "SVO", {
+    message: "Veículo exclusivo do SVO deve pertencer à frota SVO",
+    path: ["frota"],
+  });
 
 export const vehicleIdSchema = z.string().uuid("ID inválido");
 export type VehicleInput = z.infer<typeof vehicleSchema>;

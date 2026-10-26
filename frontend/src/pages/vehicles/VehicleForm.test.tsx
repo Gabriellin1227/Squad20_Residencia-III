@@ -1,0 +1,120 @@
+import { MemoryRouter } from 'react-router-dom'
+import type { ReactNode } from 'react'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { expect, test, vi } from 'vitest'
+import { VehicleForm } from './VehicleForm'
+import { api } from '@/service/api'
+
+const renderWithRouter = (ui: ReactNode) => render(ui, { wrapper: MemoryRouter })
+
+vi.mock('@/service/api', () => ({ api: vi.fn<typeof api>() }))
+
+test('cadastra veículo com valores numéricos e prévia da placa', async () => {
+  const user = userEvent.setup()
+  vi.mocked(api).mockResolvedValueOnce({})
+  const onSave = vi.fn<() => void>()
+  renderWithRouter(
+    <VehicleForm vehicle={null} onSave={onSave} onCancel={vi.fn<() => void>()} />,
+  )
+  await user.type(screen.getByLabelText('Placa'), 'abc1d23')
+  await user.type(screen.getByLabelText('Modelo'), 'Fiat Fiorino')
+  await user.type(screen.getByLabelText('Combustível'), 'Flex')
+  await user.type(screen.getByLabelText('Capacidade máxima'), '58')
+  expect(screen.getByText('ABC1D23')).toBeInTheDocument()
+  expect(
+    screen.queryByLabelText('Quilometragem do último alerta'),
+  ).not.toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Cadastrar veículo' }))
+  expect(api).toHaveBeenCalledWith(
+    '/vehicles',
+    expect.objectContaining({
+      method: 'POST',
+      body: expect.any(String),
+    }),
+  )
+  const options = vi.mocked(api).mock.calls[vi.mocked(api).mock.calls.length - 1]?.[1]
+  expect(JSON.parse(options?.body as string)).toMatchObject({
+    placa: 'ABC1D23',
+    capacidade_maxima: 58,
+    quilometragem: 0,
+    ultimo_km_alertado: 0,
+  })
+  expect(onSave).toHaveBeenCalledOnce()
+})
+
+test('mantém os dados preenchidos quando a API recusa o cadastro', async () => {
+  const user = userEvent.setup()
+  vi.mocked(api).mockRejectedValueOnce(new Error('Placa já cadastrada.'))
+  renderWithRouter(
+    <VehicleForm
+      vehicle={null}
+      onSave={vi.fn<() => void>()}
+      onCancel={vi.fn<() => void>()}
+    />,
+  )
+  await user.type(screen.getByLabelText('Placa'), 'abc1d23')
+  await user.type(screen.getByLabelText('Modelo'), 'Fiat Fiorino')
+  await user.type(screen.getByLabelText('Combustível'), 'Flex')
+  await user.type(screen.getByLabelText('Capacidade máxima'), '58')
+  await user.click(screen.getByRole('button', { name: 'Cadastrar veículo' }))
+  expect(await screen.findByText('Placa já cadastrada.')).toBeInTheDocument()
+  expect(screen.getByLabelText('Placa')).toHaveValue('ABC1D23')
+})
+
+test('reaproveita o formulário e envia PUT ao editar', async () => {
+  const user = userEvent.setup()
+  vi.mocked(api).mockResolvedValueOnce({})
+  renderWithRouter(
+    <VehicleForm
+      vehicle={{
+        id: 'vehicle-1',
+        identification: '',
+        plate: 'ABC1D23',
+        model: 'Fiorino',
+        fuelType: 'Flex',
+        maxCapacity: 58,
+        mileageKm: 1200,
+        lastAlertedKm: 1000,
+        monthlyCap: 1500,
+        status: 'ativo',
+        fleet: 'Não informada',
+        nextInspection: '',
+      }}
+      onSave={vi.fn<() => void>()}
+      onCancel={vi.fn<() => void>()}
+    />,
+  )
+  expect(screen.getByLabelText('Modelo')).toHaveValue('Fiorino')
+  await user.click(screen.getByRole('button', { name: 'Salvar alterações' }))
+  const options = vi.mocked(api).mock.calls[vi.mocked(api).mock.calls.length - 1]?.[1]
+  expect(JSON.parse(options?.body as string).ultimo_km_alertado).toBe(1000)
+  expect(api).toHaveBeenLastCalledWith(
+    '/vehicles/vehicle-1',
+    expect.objectContaining({ method: 'PUT' }),
+  )
+})
+
+test('breadcrumb retorna para a lista em vez de reabrir detalhes na edição', async () => {
+  const user = userEvent.setup()
+  const onBackToList = vi.fn<() => void>()
+  const onCancel = vi.fn<() => void>()
+  renderWithRouter(
+    <VehicleForm
+      vehicle={null}
+      onSave={vi.fn<() => void>()}
+      onCancel={onCancel}
+      onBackToList={onBackToList}
+    />,
+  )
+  const link = screen.getByRole('link', { name: 'Veículos' })
+  expect(link).toHaveAttribute('href', '/veiculos')
+  expect(
+    within(screen.getByRole('navigation', { name: 'Você está em' })).getByText(
+      'Novo cadastro',
+    ),
+  ).toHaveAttribute('aria-current', 'page')
+  await user.click(link)
+  expect(onBackToList).toHaveBeenCalledOnce()
+  expect(onCancel).not.toHaveBeenCalled()
+})

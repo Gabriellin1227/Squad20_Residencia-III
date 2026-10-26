@@ -1,7 +1,12 @@
 export const DRIVER_STATUSES = ['ativo', 'em_viagem', 'ferias', 'bloqueado'] as const
 export type DriverStatus = (typeof DRIVER_STATUSES)[number]
 
-export const DRIVER_FLEETS = ['Administrativa', 'SVO'] as const
+export const DRIVER_FLEETS = [
+  'Administrativa',
+  'Assistencial',
+  'Operacional',
+  'SVO',
+] as const
 export type DriverFleet = (typeof DRIVER_FLEETS)[number]
 
 export const CNH_CATEGORIES = ['A', 'B', 'C', 'D', 'E', 'AB', 'AC', 'AD', 'AE'] as const

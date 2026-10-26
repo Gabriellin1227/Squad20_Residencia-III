@@ -85,7 +85,7 @@ export function useDriverForm(
     // Estes campos ainda não são persistidos pela API.
     delete nextErrors.phone
     delete nextErrors.email
-    delete nextErrors.fleet
+    if (!values.vehicles.length) delete nextErrors.fleet
     const firstInvalid = FORM_FIELD_ORDER.find((field) => nextErrors[field])
     const input = toInput(values)
 

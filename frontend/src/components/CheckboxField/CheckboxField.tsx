@@ -5,6 +5,7 @@ import styles from './CheckboxField.module.scss'
 export interface CheckboxFieldProps {
   label: string
   description?: string
+  disabled?: boolean
   checked: boolean
   onChange: (checked: boolean) => void
   id?: string
@@ -14,6 +15,7 @@ export interface CheckboxFieldProps {
 export function CheckboxField({
   label,
   description,
+  disabled,
   checked,
   onChange,
   id,
@@ -29,6 +31,7 @@ export function CheckboxField({
         type="checkbox"
         className={styles.input}
         checked={checked}
+        disabled={disabled}
         aria-describedby={description ? `${inputId}-description` : undefined}
         onChange={(event) => onChange(event.target.checked)}
       />
