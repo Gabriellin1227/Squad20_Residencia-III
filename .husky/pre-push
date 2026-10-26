@@ -1,1 +1,1 @@
-cd backend && npm run test:push
+cd backend && npm run ci

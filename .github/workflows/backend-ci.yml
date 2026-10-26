@@ -32,7 +32,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 20 # Ou node-version-file: backend/.nvmrc se possuir
+          node-version-file: backend/.nvmrc
           cache: npm
           cache-dependency-path: backend/package-lock.json
 
@@ -40,13 +40,13 @@ jobs:
         run: npm ci
 
       - name: Checagem de Formatação (Prettier)
-        run: npx prettier --check .
+        run: npm run format:check
 
       - name: Checagem de Lint (ESLint)
-        run: npx eslint . --max-warnings=0
+        run: npm run lint
 
       - name: Checagem de Tipos (TypeScript)
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Testes Unitários e Cobertura
         run: npm run test:push

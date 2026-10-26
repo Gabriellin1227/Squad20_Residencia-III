@@ -9,4 +9,3 @@ router.post("/", authorize("perfis:gerenciar"), controller.create);
 router.put("/:id", authorize("perfis:gerenciar"), controller.update);
 router.delete("/:id", authorize("perfis:gerenciar"), controller.remove);
 export default router;
-

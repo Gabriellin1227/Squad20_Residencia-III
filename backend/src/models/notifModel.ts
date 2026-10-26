@@ -76,12 +76,6 @@ const deleteNotif = async (id: string) => {
   return result.rowCount === 1;
 };
 
-const notifRepo = {
-  create: (notif: Notification) => (
-    createNotif(notif)
-  )
-};
-
 /*
 
 usuario_id, tipo_alerta, mensagem, lida, veiculo_id
