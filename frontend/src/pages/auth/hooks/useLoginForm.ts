@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import type { LoginFormErrors, LoginFormValues, Status } from '../types'
 
-const REQUIRED_REGISTRATION = 'Informe o cadastro.'
+const REQUIRED_REGISTRATION = 'Informe o e-mail.'
 const REQUIRED_PASSWORD = 'Informe a senha.'
 
 export interface UseLoginFormResult {
@@ -18,6 +18,8 @@ function validate(values: LoginFormValues): LoginFormErrors {
 
   if (values.registration.trim() === '') {
     errors.registration = REQUIRED_REGISTRATION
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.registration.trim())) {
+    errors.registration = 'Informe um e-mail válido.'
   }
 
   if (values.password.trim() === '') {

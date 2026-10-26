@@ -1,3 +1,4 @@
+import type { Vehicle } from './types'
 import { useEffect, useRef } from 'react'
 import { Button } from '@/components/Button'
 import { StateMessage } from '@/components/StateMessage'
@@ -11,10 +12,15 @@ import styles from './VehicleDetailsPage.module.scss'
 
 export interface VehicleDetailsPageProps {
   vehicleId: string
+  onEdit?: (vehicle: Vehicle) => void
   onBack: () => void
 }
 
-export function VehicleDetailsPage({ vehicleId, onBack }: VehicleDetailsPageProps) {
+export function VehicleDetailsPage({
+  vehicleId,
+  onBack,
+  onEdit,
+}: VehicleDetailsPageProps) {
   const detailsRequest = useVehicleDetails(vehicleId)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const details = detailsRequest.status === 'success' ? detailsRequest.data : null
@@ -26,7 +32,7 @@ export function VehicleDetailsPage({ vehicleId, onBack }: VehicleDetailsPageProp
   }, [])
 
   function handleEdit() {
-    // Edição será implementada em outra task.
+    if (details) onEdit?.(details.vehicle)
   }
 
   return (
@@ -54,7 +60,7 @@ export function VehicleDetailsPage({ vehicleId, onBack }: VehicleDetailsPageProp
 
       <header className={styles.header}>
         <h1 ref={headingRef} tabIndex={-1} className={styles.title}>
-          Detalhes do Veículo{details && ` — ${details.vehicle.identification}`}
+          Detalhes do Veículo{details && ` — ${details.vehicle.plate}`}
         </h1>
         {details && (
           <p className={styles.subtitle}>
@@ -86,9 +92,15 @@ export function VehicleDetailsPage({ vehicleId, onBack }: VehicleDetailsPageProp
             <VehicleHeroCard vehicle={details.vehicle} />
           </div>
           <VehicleSummaryCard vehicle={details.vehicle} onEdit={handleEdit} />
-          <TripHistoryCard trips={details.trips} />
-          <MaintenanceCard maintenances={details.maintenances} />
-          <InspectionChecklistCard items={details.checklist} />
+          {details.availability?.trips !== false && (
+            <TripHistoryCard trips={details.trips} />
+          )}
+          {details.availability?.maintenance !== false && (
+            <MaintenanceCard maintenances={details.maintenances} />
+          )}
+          {details.availability?.checklist !== false && (
+            <InspectionChecklistCard items={details.checklist} />
+          )}
         </div>
       )}
     </div>

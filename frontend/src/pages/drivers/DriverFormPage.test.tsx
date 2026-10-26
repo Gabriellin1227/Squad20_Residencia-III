@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, expect, test } from 'vitest'
+import { beforeEach, expect, test, vi } from 'vitest'
 import { AppRoutes } from '@/App'
 
 function renderAt(path: string) {
@@ -34,12 +34,9 @@ test('cadastra um motorista e volta para a lista com a confirmação', async () 
 
   await user.type(await screen.findByLabelText('Nome completo *'), 'Paulo Henrique')
   await user.type(screen.getByLabelText('CPF *'), '52998224725')
-  await user.type(screen.getByLabelText('Telefone *'), '79998765432')
-  await user.type(screen.getByLabelText('E-mail *'), 'paulo@fsph.se.gov.br')
   await user.type(screen.getByLabelText('Nº da CNH *'), '11122233344')
   await user.selectOptions(screen.getByLabelText('Categoria *'), 'D')
   await user.type(screen.getByLabelText('Validade *'), '31122030')
-  await user.selectOptions(screen.getByLabelText('Frota *'), 'SVO')
   await user.click(screen.getByRole('button', { name: 'Salvar' }))
 
   expect(await screen.findByText(/motorista cadastrado com sucesso/i)).toBeInTheDocument()
@@ -52,12 +49,9 @@ test('impede duas CNHs iguais', async () => {
 
   await user.type(await screen.findByLabelText('Nome completo *'), 'Paulo Henrique')
   await user.type(screen.getByLabelText('CPF *'), '52998224725')
-  await user.type(screen.getByLabelText('Telefone *'), '79998765432')
-  await user.type(screen.getByLabelText('E-mail *'), 'paulo@fsph.se.gov.br')
   await user.type(screen.getByLabelText('Nº da CNH *'), '01234567890') // já usada no seed
   await user.selectOptions(screen.getByLabelText('Categoria *'), 'D')
   await user.type(screen.getByLabelText('Validade *'), '31122030')
-  await user.selectOptions(screen.getByLabelText('Frota *'), 'SVO')
   await user.click(screen.getByRole('button', { name: 'Salvar' }))
 
   expect(
@@ -85,4 +79,9 @@ test('avisa quando o motorista a editar não existe', async () => {
   renderAt('/motoristas/editar/nao-existe')
 
   expect(await screen.findByText('Motorista não encontrado.')).toBeInTheDocument()
+})
+
+vi.mock('@/components/RequireAuth/RequireAuth', async () => {
+  const { Outlet } = await import('react-router-dom')
+  return { RequireAuth: () => <Outlet /> }
 })

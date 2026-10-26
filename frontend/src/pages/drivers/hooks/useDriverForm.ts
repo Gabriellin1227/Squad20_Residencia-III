@@ -82,6 +82,10 @@ export function useDriverForm(
     event.preventDefault()
 
     const nextErrors = validateDriverForm(values)
+    // Estes campos ainda não são persistidos pela API.
+    delete nextErrors.phone
+    delete nextErrors.email
+    delete nextErrors.fleet
     const firstInvalid = FORM_FIELD_ORDER.find((field) => nextErrors[field])
     const input = toInput(values)
 

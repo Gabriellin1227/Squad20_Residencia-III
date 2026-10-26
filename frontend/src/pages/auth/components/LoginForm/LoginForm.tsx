@@ -30,9 +30,10 @@ export function LoginForm({ onSubmit, onForgotPassword }: LoginFormProps) {
         <TextField
           id="registration"
           name="registration"
-          label="Cadastro"
+          label="E-mail"
+          type="email"
           value={values.registration}
-          placeholder="Digite seu cadastro"
+          placeholder="Digite seu e-mail"
           autoComplete="username"
           isInvalid={Boolean(errors.registration)}
           errorMessage={errors.registration}

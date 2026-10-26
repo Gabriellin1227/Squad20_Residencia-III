@@ -1,4 +1,4 @@
-import maintanceModel, { Maintance } from "../models/maintanceModel";
+import maintanceModel from "../models/maintanceModel";
 import maintanceSchema, {
   maintanceIdSchema,
 } from "../middleware/validations/schemas/maintanceSchema";
@@ -14,7 +14,7 @@ const error = (message: string, status: number) => ({
   status,
 });
 const invalidId = (id: string) => !maintanceIdSchema.safeParse(id).success;
-const notFound = () => error("Vehicle not found", 404);
+const notFound = () => error("Manutenção não encontrada", 404);
 
 const handleDuplicateKeyError = (cause: unknown) => {
   const dbError = cause as { code?: string; constraint?: string };
@@ -38,7 +38,7 @@ const createMaintance = async (body: unknown) => {
   if (!validation.success) return error(validation.error.message, 400);
   try {
     const createdMaintance = await maintanceModel.createMaintance(
-      validation.data as Maintance,
+      validation.data,
     );
     return success(createdMaintance, 201);
   } catch (cause) {

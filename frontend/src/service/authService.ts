@@ -1,12 +1,28 @@
 import type { LoginFormValues } from '@/pages/auth/types'
+import { api, clearSession, setSessionToken } from './api'
 
-/**
- * Ponto de integração com o backend de autenticação.
- * Substitua a simulação abaixo pela chamada HTTP real (ex.: POST /auth/login).
- */
+export interface SessionUser {
+  id: string
+  nome: string
+  email: string
+  permissoes: string[]
+}
+
 export async function login(values: LoginFormValues): Promise<void> {
-  void values
-  await new Promise<void>((resolve) => {
-    window.setTimeout(resolve, 700)
+  clearSession()
+  const result = await api<{ token: string }>('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email: values.registration, password: values.password }),
   })
+  setSessionToken(result.token)
+}
+
+export const currentUser = () => api<SessionUser>('/auth/me')
+
+export async function logout(): Promise<void> {
+  try {
+    await api<void>('/auth/logout', { method: 'POST' })
+  } finally {
+    clearSession()
+  }
 }

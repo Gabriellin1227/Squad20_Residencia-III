@@ -1,94 +1,53 @@
 import { pool } from "../db";
-import { type MaintenaceInput } from "../middleware/validations/schemas/maintanceSchema";
+import type { MaintenaceInput } from "../middleware/validations/schemas/maintanceSchema";
 
 export interface Maintance extends MaintenaceInput {
   id: string;
-  veiculo_id: string;
-  tipo_manutencao: "preventiva" | "impeditiva";
-  data_inicio: Date;
-  data_fim: Date;
-  custo: number;
-  descricao: string;
-  status: "ativo" | "inativo";
+  criado_em: Date;
+  atualizado_em: Date;
 }
-
-const columns = `
-  id,
-  veiculo_id,
-  tipo_manuntencao,
-  data_inicio,
-  data_fim,
-  custo,
-  descricao,
-  status,
-  criado_em
-  atualizado_em
-`;
-
-const getAllMaintance = async () => {
-  const result = await pool.query(
-    `SELECT ${columns} FROM manuntencao ORDER BY status, id`,
-  );
-  return result.rows;
-};
-
-const getMaintancById = async (id: string) => {
-  const result = await pool.query(
-    `SELECT ${columns} FROM manuntencao WHERE id = $1`,
-    [id],
-  );
-  return result.rows[0];
-};
-
-const createMaintance = async (maintance: Maintance) => {
-  const result = await pool.query(
-    `INSERT INTO manuntencao (veiculo_id, tipo_manuntencao, data_inicio, data_fim, custo, descricao, status)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING ${columns}`,
-    [
-      maintance.veiculo_id,
-      maintance.tipo_manutencao,
-      maintance.data_inicio,
-      maintance.data_fim,
-      maintance.custo,
-      maintance.descricao,
-      maintance.status,
-    ],
-  );
-
-  return result.rows[0];
-};
-
+const columns =
+  "id, veiculo_id, tipo_manutencao, data_inicio, data_fim, custo, descricao, status, km_realizado, km_proxima, criado_em, atualizado_em";
+const values = (input: MaintenaceInput) => [
+  input.veiculo_id,
+  input.tipo_manutencao,
+  input.data_inicio ?? null,
+  input.data_fim ?? null,
+  input.custo,
+  input.descricao ?? null,
+  input.status,
+  input.km_realizado ?? null,
+  input.km_proxima ?? null,
+];
+const getAllMaintance = async (): Promise<Maintance[]> =>
+  (
+    await pool.query(
+      `SELECT ${columns} FROM manutencoes ORDER BY data_inicio DESC, id`,
+    )
+  ).rows;
+const getMaintancById = async (id: string): Promise<Maintance | undefined> =>
+  (await pool.query(`SELECT ${columns} FROM manutencoes WHERE id=$1`, [id]))
+    .rows[0];
+const createMaintance = async (input: MaintenaceInput): Promise<Maintance> =>
+  (
+    await pool.query(
+      `INSERT INTO manutencoes (veiculo_id,tipo_manutencao,data_inicio,data_fim,custo,descricao,status,km_realizado,km_proxima) VALUES ($1,$2,COALESCE($3,NOW()),$4,$5,$6,$7,$8,$9) RETURNING ${columns}`,
+      values(input),
+    )
+  ).rows[0];
 const updateMaintance = async (
   id: string,
-  maintance: MaintenaceInput,
-): Promise<Maintance | undefined> => {
-  const result = await pool.query(
-    `UPDATE manuntencao
-    SET tipo_manuntencao = $1, tipo_manuntencao = $2, data_inicio = $3, data_fim = $4, custo = $5, descricao = $6, status = $7
-    WHERE id = $8
-    RETURNING ${columns}`,
-    [
-      maintance.tipo_manutencao,
-      maintance.data_inicio,
-      maintance.data_fim,
-      maintance.custo,
-      maintance.descricao,
-      maintance.status,
-      id,
-    ],
-  );
-
-  return result.rows[0];
-};
-
-const deleteMaintance = async (id: string) => {
-  const result = await pool.query(`DELETE FROM manuntencao WHERE id = $1`, [
-    id,
-  ]);
-  return result.rowCount === 1;
-};
-
+  input: MaintenaceInput,
+): Promise<Maintance | undefined> =>
+  (
+    await pool.query(
+      `UPDATE manutencoes SET veiculo_id=$1,tipo_manutencao=$2,data_inicio=COALESCE($3,data_inicio),data_fim=$4,custo=$5,descricao=$6,status=$7,km_realizado=$8,km_proxima=$9 WHERE id=$10 RETURNING ${columns}`,
+      [...values(input), id],
+    )
+  ).rows[0];
+const deleteMaintance = async (id: string): Promise<boolean> =>
+  (await pool.query("DELETE FROM manutencoes WHERE id=$1", [id])).rowCount ===
+  1;
 export default {
   getAllMaintance,
   getMaintancById,

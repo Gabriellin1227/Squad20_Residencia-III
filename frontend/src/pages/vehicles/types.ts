@@ -4,6 +4,9 @@ export interface VehicleResponse {
   placa: string
   modelo: string
   tipo_combustivel: string
+  ultimo_km_alertado?: number
+  teto_gasto_mensal?: number | string | null
+  quilometragem?: number
   capacidade_maxima: number
   status: string
   ativo: boolean
@@ -19,7 +22,7 @@ export interface VehicleExtraInfoResponse {
 
 export type VehicleStatus = 'ativo' | 'manutencao' | 'em_viagem' | 'inativo'
 
-export type Fleet = 'Administrativa' | 'Assistencial' | 'Operacional'
+export type Fleet = 'Administrativa' | 'Assistencial' | 'Operacional' | 'Não informada'
 
 export interface Vehicle {
   id: string
@@ -30,6 +33,8 @@ export interface Vehicle {
   maxCapacity: number
   status: VehicleStatus
   mileageKm: number
+  lastAlertedKm?: number
+  monthlyCap?: number | null
   fleet: Fleet
   nextInspection: string // "AAAA-MM"
 }
@@ -42,14 +47,14 @@ export interface Trip {
   startedAt: string // ISO 8601
 }
 
-export type MaintenanceType = 'preventiva' | 'corretiva'
+export type MaintenanceType = 'preventiva' | 'corretiva' | 'impeditiva'
 
 export interface Maintenance {
   id: string
   type: MaintenanceType
   description: string
   date: string // "AAAA-MM-DD"
-  mileageKm: number
+  mileageKm: number | null
   cost: number
 }
 
@@ -60,6 +65,7 @@ export interface InspectionItem {
 }
 
 export interface VehicleDetails {
+  availability?: { trips: boolean; checklist: boolean; maintenance: boolean }
   vehicle: Vehicle
   trips: Trip[]
   maintenances: Maintenance[]

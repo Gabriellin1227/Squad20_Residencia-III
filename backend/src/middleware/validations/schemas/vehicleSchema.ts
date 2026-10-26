@@ -22,8 +22,11 @@ export const vehicleSchema = z
     deletado_em: z.coerce.date().nullable().optional(),
     criado_em: z.coerce.date().optional(),
     atualizado_em: z.coerce.date().optional(),
-    quilometragem: z.number().positive("KM deve ser maior que zero"),
-    ultimo_km_alertado: z.number().positive("KM deve ser maior que zero"),
+    quilometragem: z.number().int().nonnegative("KM não pode ser negativo"),
+    ultimo_km_alertado: z
+      .number()
+      .int()
+      .nonnegative("KM não pode ser negativo"),
   })
   .strict();
 

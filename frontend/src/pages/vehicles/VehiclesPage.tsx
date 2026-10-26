@@ -1,3 +1,4 @@
+import { VehicleForm } from './VehicleForm'
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/Button'
 import { StateMessage } from '@/components/StateMessage'
@@ -20,6 +21,9 @@ const NO_VEHICLES: Vehicle[] = []
 
 export function VehiclesPage() {
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null)
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null | undefined>(
+    undefined,
+  )
   const vehiclesRequest = useVehicles()
   const vehicles =
     vehiclesRequest.status === 'success' ? vehiclesRequest.data : NO_VEHICLES
@@ -39,13 +43,26 @@ export function VehiclesPage() {
     }
   }, [selectedVehicleId])
 
-  function handleEdit() {
-    // Edição será implementada em outra task.
+  function handleEdit(vehicle: Vehicle) {
+    setEditingVehicle(vehicle)
   }
 
   function handleCreate() {
-    // Cadastro será implementado em outra task.
+    setEditingVehicle(null)
   }
+
+  if (editingVehicle !== undefined)
+    return (
+      <VehicleForm
+        vehicle={editingVehicle}
+        onCancel={() => setEditingVehicle(undefined)}
+        onSave={() => {
+          setEditingVehicle(undefined)
+          setSelectedVehicleId(null)
+          vehiclesRequest.reload()
+        }}
+      />
+    )
 
   if (selectedVehicleId !== null) {
     return (
@@ -54,6 +71,7 @@ export function VehiclesPage() {
       >
         <VehicleDetailsPage
           vehicleId={selectedVehicleId}
+          onEdit={handleEdit}
           onBack={() => setSelectedVehicleId(null)}
         />
       </Suspense>

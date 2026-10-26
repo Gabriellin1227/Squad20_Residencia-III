@@ -7,6 +7,7 @@ import styles from './MaintenanceCard.module.scss'
 const MAINTENANCE_TYPE_LABEL: Record<MaintenanceType, string> = {
   preventiva: 'Preventiva',
   corretiva: 'Corretiva',
+  impeditiva: 'Impeditiva',
 }
 
 export interface MaintenanceCardProps {
@@ -31,7 +32,9 @@ export function MaintenanceCard({ maintenances }: MaintenanceCardProps) {
               <span className={styles.description}>{maintenance.description}</span>
               <span className={styles.meta}>
                 <time dateTime={maintenance.date}>{formatDate(maintenance.date)}</time> ·{' '}
-                {formatKm(maintenance.mileageKm)}
+                {maintenance.mileageKm == null
+                  ? 'Quilometragem não informada'
+                  : formatKm(maintenance.mileageKm)}
               </span>
               <span className={styles.cost}>{formatCurrency(maintenance.cost)}</span>
             </li>

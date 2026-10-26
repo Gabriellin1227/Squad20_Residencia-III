@@ -1,3 +1,4 @@
+import { PERMISSIONS } from "../../../auth/permissions";
 import { z } from "zod";
 
 export const profileIdSchema = z.string().uuid("ID inválido");
@@ -6,14 +7,7 @@ export const profileSchema = z
     nome: z.string().trim().min(3).max(50),
     descricao: z.string().trim().max(255).nullable().optional(),
     permissoes: z
-      .array(
-        z
-          .string()
-          .regex(
-            /^[a-z][a-z0-9_-]*:[a-z][a-z0-9_-]*$/,
-            "Permissão deve usar recurso:acao",
-          ),
-      )
+      .array(z.enum(PERMISSIONS))
       .max(100)
       .refine(
         (values) => new Set(values).size === values.length,
@@ -29,4 +23,4 @@ export const ADMIN_PERMISSIONS = [
   "perfis:ler",
   "perfis:gerenciar",
   "usuarios:gerenciar-perfis",
-];
+] as const;

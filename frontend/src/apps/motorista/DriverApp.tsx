@@ -1,3 +1,4 @@
+import { RequireAuth } from '@/components/RequireAuth/RequireAuth'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { NotFoundPage } from '@/pages/placeholder/NotFoundPage'
@@ -13,13 +14,15 @@ export function DriverRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage redirectTo="/" />} />
-      <Route element={<DriverLayout />}>
-        <Route index element={<DriverHomePage />} />
-        <Route path="viagens" element={<DriverTripsPage />} />
-        <Route path="checklist" element={<DriverChecklistPage />} />
-        <Route path="abastecimento" element={<DriverFuelPage />} />
-        <Route path="perfil" element={<DriverProfilePage />} />
-        <Route path="*" element={<NotFoundPage />} />
+      <Route element={<RequireAuth />}>
+        <Route element={<DriverLayout />}>
+          <Route index element={<DriverHomePage />} />
+          <Route path="viagens" element={<DriverTripsPage />} />
+          <Route path="checklist" element={<DriverChecklistPage />} />
+          <Route path="abastecimento" element={<DriverFuelPage />} />
+          <Route path="perfil" element={<DriverProfilePage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
       </Route>
     </Routes>
   )

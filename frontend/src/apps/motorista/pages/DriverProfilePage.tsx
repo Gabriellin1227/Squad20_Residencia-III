@@ -1,3 +1,4 @@
+import { logout } from '@/service/authService'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
@@ -33,7 +34,17 @@ export function DriverProfilePage() {
         </Card>
       )}
 
-      <Button variant="secondary" isFullWidth onClick={() => navigate('/login')}>
+      <Button
+        variant="secondary"
+        isFullWidth
+        onClick={async () => {
+          try {
+            await logout()
+          } finally {
+            navigate('/login')
+          }
+        }}
+      >
         Sair
       </Button>
     </div>

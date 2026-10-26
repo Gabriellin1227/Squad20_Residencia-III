@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, expect, test } from 'vitest'
+import { beforeEach, expect, test, vi } from 'vitest'
 import { AppRoutes } from './App'
 
 function renderAt(path: string) {
@@ -63,4 +63,9 @@ test('mostra a página 404 para rotas desconhecidas', () => {
   expect(
     screen.getByRole('heading', { name: /página não encontrada/i }),
   ).toBeInTheDocument()
+})
+
+vi.mock('@/components/RequireAuth/RequireAuth', async () => {
+  const { Outlet } = await import('react-router-dom')
+  return { RequireAuth: () => <Outlet /> }
 })

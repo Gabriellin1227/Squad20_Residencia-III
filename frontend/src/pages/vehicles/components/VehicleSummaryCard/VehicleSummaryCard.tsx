@@ -15,7 +15,12 @@ export function VehicleSummaryCard({ vehicle, onEdit }: VehicleSummaryCardProps)
     { label: 'Modelo', value: vehicle.model },
     { label: 'Quilometragem', value: formatKm(vehicle.mileageKm) },
     { label: 'Frota', value: vehicle.fleet },
-    { label: 'Próxima vistoria', value: formatMonthYear(vehicle.nextInspection) },
+    {
+      label: 'Próxima vistoria',
+      value: vehicle.nextInspection
+        ? formatMonthYear(vehicle.nextInspection)
+        : 'Não informada',
+    },
   ]
 
   return (

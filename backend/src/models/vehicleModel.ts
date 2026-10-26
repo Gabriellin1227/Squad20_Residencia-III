@@ -71,8 +71,8 @@ const getNearMaintance = async (
 
 const createVehicle = async (vehicle: Vehicle) => {
   const result = await pool.query(
-    `INSERT INTO veiculos (modelo, placa, tipo_combustivel, capacidade_maxima, teto_gasto_mensal, quilometragem, ultimo_km_alertado) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7) 
+    `INSERT INTO veiculos (modelo, placa, tipo_combustivel, capacidade_maxima, teto_gasto_mensal, quilometragem, ultimo_km_alertado)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING ${columns}`,
     [
       vehicle.modelo,
@@ -93,9 +93,9 @@ const updateVehicle = async (
   vehicle: VehicleInput,
 ): Promise<Vehicle | undefined> => {
   const result = await pool.query(
-    `UPDATE veiculos 
-      SET modelo = $1, placa = $2, tipo_combustivel = $3, capacidade_maxima = $4, teto_gasto_mensal = $5 
-      WHERE id = $6 
+    `UPDATE veiculos
+      SET modelo = $1, placa = $2, tipo_combustivel = $3, capacidade_maxima = $4, teto_gasto_mensal = $5, quilometragem = $6, ultimo_km_alertado = $7, atualizado_em = NOW()
+      WHERE id = $8
       RETURNING ${columns}`,
     [
       vehicle.modelo,
@@ -103,6 +103,8 @@ const updateVehicle = async (
       vehicle.tipo_combustivel,
       vehicle.capacidade_maxima,
       vehicle.teto_gasto_mensal ?? null,
+      vehicle.quilometragem,
+      vehicle.ultimo_km_alertado,
       id,
     ],
   );

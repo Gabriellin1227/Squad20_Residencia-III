@@ -1,6 +1,4 @@
-import type { Config } from "jest";
-
-const config: Config = {
+const config = {
   roots: ["<rootDir>/src"],
   collectCoverageFrom: ["<rootDir>/src/**/*.ts"],
   coverageDirectory: "coverage",
@@ -13,4 +11,4 @@ const config: Config = {
   },
 };
 
-export default config;
+module.exports = config;

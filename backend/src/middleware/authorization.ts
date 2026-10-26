@@ -1,9 +1,8 @@
-import type { Request, RequestHandler } from "express";
+import type { RequestHandler } from "express";
 import model from "../models/profileModel";
 import { profileIdSchema } from "./validations/schemas/profileSchema";
 
-// O middleware de autenticação deve preencher req.user após validar o JWT.
-type AuthenticatedRequest = Request & { user?: { id: string } };
+import type { AuthenticatedRequest } from "../auth/session";
 export const authorize =
   (permission: string): RequestHandler =>
   async (req, res, next) => {

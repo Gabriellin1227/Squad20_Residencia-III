@@ -5,36 +5,16 @@ import { CheckboxField } from '@/components/CheckboxField'
 import { SelectField } from '@/components/SelectField'
 import type { SelectOption } from '@/components/SelectField'
 import { TextField } from '@/components/TextField'
-import { useVehicles } from '@/pages/vehicles/hooks/useVehicles'
-import { maskCpf, maskDate, maskPhone, onlyDigits } from '@/utils/masks'
-import { CNH_CATEGORIES, DRIVER_FLEETS, DRIVER_STATUSES } from '../../types'
-import type {
-  CnhCategory,
-  Driver,
-  DriverFleet,
-  DriverInput,
-  DriverStatus,
-} from '../../types'
+import { maskCpf, maskDate, onlyDigits } from '@/utils/masks'
+import { CNH_CATEGORIES } from '../../types'
+import type { CnhCategory, Driver, DriverInput } from '../../types'
 import { DRIVER_FIELD_ID_PREFIX, useDriverForm } from '../../hooks/useDriverForm'
-import { DriverVehiclesField } from '../DriverVehiclesField'
-import { DRIVER_STATUS_LABEL } from '../DriverStatusBadge'
-import { PhotoUpload } from '../PhotoUpload'
 import styles from './DriverForm.module.scss'
 
 const CATEGORY_OPTIONS: SelectOption<CnhCategory | ''>[] = [
   { value: '', label: 'Selecione' },
   ...CNH_CATEGORIES.map((category) => ({ value: category, label: category })),
 ]
-
-const FLEET_OPTIONS: SelectOption<DriverFleet | ''>[] = [
-  { value: '', label: 'Selecione (Administrativa, SVO...)' },
-  ...DRIVER_FLEETS.map((fleet) => ({ value: fleet, label: fleet })),
-]
-
-const STATUS_OPTIONS: SelectOption<DriverStatus>[] = DRIVER_STATUSES.map((status) => ({
-  value: status,
-  label: DRIVER_STATUS_LABEL[status],
-}))
 
 const fieldId = (field: string) => `${DRIVER_FIELD_ID_PREFIX}${field}`
 
@@ -48,11 +28,6 @@ export interface DriverFormProps {
 export function DriverForm({ initial, onSubmit, onCancel }: DriverFormProps) {
   const form = useDriverForm(initial, onSubmit)
   const { values, errors, setField } = form
-  const vehiclesRequest = useVehicles()
-  const plates =
-    vehiclesRequest.status === 'success'
-      ? vehiclesRequest.data.map((vehicle) => vehicle.plate)
-      : []
 
   return (
     <form onSubmit={form.handleSubmit} noValidate className={styles.form}>
@@ -69,12 +44,6 @@ export function DriverForm({ initial, onSubmit, onCancel }: DriverFormProps) {
         )}
 
         <div className={styles.layout}>
-          <PhotoUpload
-            name={values.name}
-            photo={values.photo}
-            onChange={(photo) => setField('photo', photo)}
-          />
-
           <div className={styles.sections}>
             <fieldset className={styles.section}>
               <legend className={styles.legend}>Dados pessoais</legend>
@@ -97,27 +66,6 @@ export function DriverForm({ initial, onSubmit, onCancel }: DriverFormProps) {
                   onChange={(value) => setField('cpf', maskCpf(value))}
                   isInvalid={!!errors.cpf}
                   errorMessage={errors.cpf}
-                />
-                <TextField
-                  id={fieldId('phone')}
-                  label="Telefone *"
-                  type="tel"
-                  inputMode="tel"
-                  placeholder="(79) 00000-0000"
-                  value={values.phone}
-                  onChange={(value) => setField('phone', maskPhone(value))}
-                  isInvalid={!!errors.phone}
-                  errorMessage={errors.phone}
-                />
-                <TextField
-                  id={fieldId('email')}
-                  label="E-mail *"
-                  type="email"
-                  placeholder="email@exemplo.com"
-                  value={values.email}
-                  onChange={(value) => setField('email', value)}
-                  isInvalid={!!errors.email}
-                  errorMessage={errors.email}
                 />
               </div>
             </fieldset>
@@ -162,39 +110,15 @@ export function DriverForm({ initial, onSubmit, onCancel }: DriverFormProps) {
 
             <fieldset className={styles.section}>
               <legend className={styles.legend}>Vínculo com a frota</legend>
-              <div className={styles.grid2}>
-                <SelectField
-                  id={fieldId('fleet')}
-                  label={values.isWildcard ? 'Frota' : 'Frota *'}
-                  value={values.fleet}
-                  options={FLEET_OPTIONS}
-                  onChange={(value) => setField('fleet', value)}
-                  errorMessage={errors.fleet}
-                />
-                <DriverVehiclesField
-                  value={values.vehicles}
-                  options={plates}
-                  onChange={(next) => setField('vehicles', next)}
-                />
-              </div>
               <CheckboxField
-                label="Motorista coringa — pode atuar em todas as frotas (inclusive SVO)"
-                description="Ao marcar, o vínculo específico de frota deixa de ser obrigatório."
+                label="Motorista coringa"
+                description="Indica que o motorista pode atuar em diferentes frotas."
                 checked={values.isWildcard}
                 onChange={(checked) => setField('isWildcard', checked)}
               />
             </fieldset>
 
             <div className={styles.footer}>
-              <SelectField
-                id={fieldId('status')}
-                className={styles.status}
-                label="Status *"
-                value={values.status}
-                options={STATUS_OPTIONS}
-                onChange={(value) => setField('status', value)}
-                errorMessage={errors.status}
-              />
               <div className={styles.actions}>
                 <Button variant="secondary" onClick={onCancel}>
                   Cancelar

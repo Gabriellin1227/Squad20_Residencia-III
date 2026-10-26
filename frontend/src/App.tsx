@@ -1,3 +1,5 @@
+import { UsersPage } from '@/pages/users/UsersPage'
+import { RequireAuth } from '@/components/RequireAuth/RequireAuth'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '@/layouts/AppLayout'
 import { LoginPage } from '@/pages/auth/LoginPage'
@@ -24,18 +26,21 @@ export function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
 
-      <Route element={<AppLayout />}>
-        <Route index element={<HomePage />} />
-        <Route path="veiculos" element={<VehiclesPage />} />
-        <Route path="motoristas" element={<DriversPage />} />
-        <Route path="motoristas/novo" element={<DriverFormPage />} />
-        <Route path="motoristas/editar/:id" element={<DriverFormPage />} />
-        <Route path="motoristas/:id" element={<DriverDetailsPage />} />
-        <Route path="perfil" element={<ProfilePage />} />
-        {COMING_SOON_ROUTES.map(({ path, title }) => (
-          <Route key={path} path={path} element={<ComingSoonPage title={title} />} />
-        ))}
-        <Route path="*" element={<NotFoundPage />} />
+      <Route element={<RequireAuth />}>
+        <Route element={<AppLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="veiculos" element={<VehiclesPage />} />
+          <Route path="motoristas" element={<DriversPage />} />
+          <Route path="motoristas/novo" element={<DriverFormPage />} />
+          <Route path="motoristas/editar/:id" element={<DriverFormPage />} />
+          <Route path="motoristas/:id" element={<DriverDetailsPage />} />
+          <Route path="perfil" element={<ProfilePage />} />
+          <Route path="usuarios" element={<UsersPage />} />
+          {COMING_SOON_ROUTES.map(({ path, title }) => (
+            <Route key={path} path={path} element={<ComingSoonPage title={title} />} />
+          ))}
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
       </Route>
     </Routes>
   )

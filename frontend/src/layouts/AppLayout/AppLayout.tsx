@@ -1,3 +1,4 @@
+import { currentUser, logout, type SessionUser } from '@/service/authService'
 import { useEffect, useId, useState } from 'react'
 import type { ReactNode } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
@@ -7,17 +8,23 @@ import styles from './AppLayout.module.scss'
 interface NavItem {
   to: string
   label: string
+  permission?: string
 }
 
 const NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Início' },
-  { to: '/veiculos', label: 'Veículos' },
-  { to: '/motoristas', label: 'Motoristas' },
+  { to: '/veiculos', label: 'Veículos', permission: 'veiculos:ler' },
+  { to: '/motoristas', label: 'Motoristas', permission: 'motoristas:ler' },
   { to: '/abastecimentos', label: 'Abastecimentos' },
   { to: '/manutencoes', label: 'Manutenções' },
   { to: '/viagens', label: 'Viagens' },
   { to: '/relatorios', label: 'Relatórios' },
   { to: '/perfil', label: 'Perfil' },
+  {
+    to: '/usuarios',
+    label: 'Usuários e permissões',
+    permission: 'usuarios:delegar-permissoes',
+  },
 ]
 
 export interface AppLayoutProps {
@@ -26,6 +33,12 @@ export interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
+  const [user, setUser] = useState<SessionUser | null>(null)
+  useEffect(() => {
+    currentUser()
+      .then(setUser)
+      .catch(() => {})
+  }, [])
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const panelId = useId()
   const navigate = useNavigate()
@@ -41,9 +54,13 @@ export function AppLayout({ children }: AppLayoutProps) {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isMenuOpen])
 
-  function handleLogout() {
+  async function handleLogout() {
     setIsMenuOpen(false)
-    navigate('/login')
+    try {
+      await logout()
+    } finally {
+      navigate('/login')
+    }
   }
 
   return (
@@ -94,7 +111,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         >
           <nav aria-label="Menu principal">
             <ul className={styles.navList}>
-              {NAV_ITEMS.map((item) => (
+              {NAV_ITEMS.filter(
+                (item) => !item.permission || user?.permissoes.includes(item.permission),
+              ).map((item) => (
                 <li key={item.to}>
                   <NavLink
                     to={item.to}
@@ -114,7 +133,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           <div className={styles.userBox}>
             <span className={styles.avatar} aria-hidden="true" />
             <span className={styles.userText}>
-              <span className={styles.userName}>Gestor de Frota</span>
+              <span className={styles.userName}>{user?.nome ?? 'Usuário'}</span>
               <button type="button" className={styles.logout} onClick={handleLogout}>
                 Sair
               </button>

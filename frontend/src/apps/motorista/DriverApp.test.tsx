@@ -56,3 +56,8 @@ test('avisa quando o aparelho fica sem internet', async () => {
   expect(await screen.findByText(/sem conexão/i)).toBeInTheDocument()
   vi.restoreAllMocks()
 })
+
+vi.mock('@/components/RequireAuth/RequireAuth', async () => {
+  const { Outlet } = await import('react-router-dom')
+  return { RequireAuth: () => <Outlet /> }
+})

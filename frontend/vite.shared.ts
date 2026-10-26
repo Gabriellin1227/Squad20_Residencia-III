@@ -14,7 +14,10 @@ export function createAppConfig(app: 'gestor' | 'motorista', port: number) {
     envDir: projectRoot,
     plugins: [react()],
     resolve: {
-      alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '/src': fileURLToPath(new URL('./src', import.meta.url)),
+      },
     },
     css: {
       preprocessorOptions: {

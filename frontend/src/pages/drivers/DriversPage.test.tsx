@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, expect, test } from 'vitest'
+import { beforeEach, expect, test, vi } from 'vitest'
 import { AppRoutes } from '@/App'
 
 function renderDrivers(path = '/motoristas') {
@@ -86,4 +86,9 @@ test('abre os detalhes de um motorista', async () => {
   ).toBeInTheDocument()
   expect(screen.getByText('529.982.247-25')).toBeInTheDocument()
   expect(screen.getByText('Liberado')).toBeInTheDocument()
+})
+
+vi.mock('@/components/RequireAuth/RequireAuth', async () => {
+  const { Outlet } = await import('react-router-dom')
+  return { RequireAuth: () => <Outlet /> }
 })
