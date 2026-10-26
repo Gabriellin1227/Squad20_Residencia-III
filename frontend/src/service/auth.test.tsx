@@ -102,8 +102,8 @@ test('cadastro envia somente campos suportados pela API', async () => {
     cnh: '11122233344',
     cnhCategory: 'D',
     cnhExpiry: '2030-12-31',
-    fleet: '',
-    vehicles: [],
+    fleet: 'SVO',
+    vehicles: ['SVO0A01'],
     isWildcard: false,
     status: 'ativo',
   })
@@ -114,5 +114,7 @@ test('cadastro envia somente campos suportados pela API', async () => {
     categoria: 'D',
     validade_cnh: '2030-12-31',
     motorista_coringa: false,
+    frota: 'SVO',
+    veiculos: ['SVO0A01'],
   })
 })

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { fleetSchema } from "./fleetSchema";
 import { cpfSchema } from "../cpf";
 import { date } from "../../../utils/dataUtils";
 // Schema do Motorista
@@ -15,6 +16,15 @@ export const driverSchema = z
     // Trata entrada em string/Data e converte para Date válida
     validade_cnh: date,
     motorista_coringa: z.boolean().optional(),
+    frota: fleetSchema.nullable().optional(),
+    veiculos: z
+      .array(z.string().trim().toUpperCase().min(1).max(10))
+      .max(100)
+      .refine(
+        (items) => new Set(items).size === items.length,
+        "Veículos duplicados",
+      )
+      .optional(),
   })
   .strict(); // Corresponde ao .unknown(false) do Joi
 

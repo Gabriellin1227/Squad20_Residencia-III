@@ -41,6 +41,10 @@ export function HomePage() {
 
     const vehicles = vehiclesRequest.data
     const drivers = summarizeDrivers(driversRequest.data)
+    const exclusiveSvo = vehicles.filter((vehicle) => vehicle.exclusiveSvo).length
+    const linkedDrivers = driversRequest.data.filter(
+      (driver) => driver.vehicles.length > 0,
+    ).length
     const availableVehicles = vehicles.filter(
       (vehicle) => vehicle.status === 'ativo',
     ).length
@@ -70,6 +74,30 @@ export function HomePage() {
           label="Bloqueios operacionais"
           value={drivers.blocked}
           hint={`${drivers.expired} CNH vencida${drivers.expired === 1 ? '' : 's'}`}
+        />
+        <StatCard
+          variant="info"
+          label="Veículos SVO"
+          value={vehicles.filter((vehicle) => vehicle.fleet === 'SVO').length}
+          hint={`${exclusiveSvo} exclusivos SVO`}
+        />
+        <StatCard
+          variant="info"
+          label="Motoristas SVO"
+          value={driversRequest.data.filter((driver) => driver.fleet === 'SVO').length}
+          hint={`${driversRequest.data.filter((driver) => driver.isWildcard).length} motoristas coringas (todas as frotas)`}
+        />
+        <StatCard
+          variant="success"
+          label="Motoristas com veículos vinculados"
+          value={linkedDrivers}
+          hint="Vínculos registrados no cadastro"
+        />
+        <StatCard
+          variant="warning"
+          label="Veículos sem frota definida"
+          value={vehicles.filter((vehicle) => vehicle.fleet === 'Não informada').length}
+          hint="Revise os cadastros existentes"
         />
       </section>
     )

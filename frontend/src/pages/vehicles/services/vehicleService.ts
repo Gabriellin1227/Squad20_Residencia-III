@@ -20,7 +20,8 @@ const toVehicle = (row: VehicleResponse): Vehicle => ({
   mileageKm: Number(row.quilometragem ?? 0),
   lastAlertedKm: row.ultimo_km_alertado ?? 0,
   monthlyCap: row.teto_gasto_mensal == null ? null : Number(row.teto_gasto_mensal),
-  fleet: 'Não informada',
+  fleet: row.frota ?? 'Não informada',
+  exclusiveSvo: row.exclusivo_svo ?? false,
   nextInspection: '',
 })
 export async function getVehicles(): Promise<Vehicle[]> {

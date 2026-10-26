@@ -57,3 +57,4 @@ main()
     process.exitCode = 1;
   })
   .finally(() => pool.end());
+console.log();

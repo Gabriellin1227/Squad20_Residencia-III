@@ -5,15 +5,11 @@
   min-width: 0;
 }
 
-// xs: foto acima dos campos; lg: foto em coluna à esquerda.
+// O formulário ocupa toda a largura, inclusive quando não há foto.
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: $space-4;
-
-  @include up(lg) {
-    grid-template-columns: 9rem minmax(0, 1fr);
-  }
 }
 
 .sections {
@@ -86,5 +82,103 @@
 
   @include up(md) {
     grid-template-columns: repeat(2, auto);
+  }
+}
+
+.card {
+  background: $color-card;
+  border-radius: $radius-md;
+  padding: 1.25rem;
+  gap: 1.25rem;
+}
+
+.section + .section {
+  border-top: 1px solid $color-border;
+  padding-top: 1.25rem;
+}
+
+.legend {
+  font-size: $font-size-small;
+}
+
+.footer {
+  justify-content: space-between;
+  border-top: 1px solid $color-border;
+  padding-top: 1rem;
+}
+
+.form input,
+.form select {
+  background: $color-card;
+  border-radius: $radius-sm;
+}
+
+.card {
+  background: $color-card;
+}
+.required {
+  float: right;
+  margin-left: 1rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+.photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.avatar {
+  width: 7rem;
+  height: 7rem;
+  background: $color-primary-soft;
+  border: 1px solid $color-border;
+  color: $color-primary;
+}
+.photo small,
+.helper {
+  color: $color-text-muted;
+  font-size: 0.6875rem;
+}
+.photo button {
+  font-size: 0.75rem;
+  min-height: 2.25rem;
+}
+.unavailable,
+.status {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.status {
+  flex: 1;
+}
+.helper {
+  margin-top: 0.4rem;
+}
+.wildcard {
+  border: 1px solid #f2cb68;
+  border-radius: $radius-sm;
+  background: #fff4ce;
+  padding: 0.75rem;
+}
+.form label {
+  font-size: 0.75rem;
+}
+.form input,
+.form select {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+}
+.form input:disabled,
+.form select:disabled {
+  color: $color-text-muted;
+  opacity: 1;
+  background: $color-surface;
+}
+@media (min-width: 1000px) {
+  .layout {
+    grid-template-columns: 7rem minmax(0, 1fr);
   }
 }
