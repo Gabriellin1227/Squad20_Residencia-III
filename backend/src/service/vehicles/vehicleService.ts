@@ -19,6 +19,16 @@ const notFound = () => error("Vehicle not found", 404);
 
 const handleDuplicateKeyError = (cause: unknown) => {
   const dbError = cause as { code?: string; constraint?: string };
+  if (
+    dbError?.code === "23514" &&
+    ["motoristas_veiculos_frota", "veiculos_exclusivo_svo_frota"].includes(
+      dbError.constraint ?? "",
+    )
+  )
+    return error(
+      "Frota incompatível com a exclusividade SVO ou com motoristas vinculados. Revise os vínculos antes de alterar.",
+      409,
+    );
   if (dbError?.code !== "23505") throw cause;
   if (dbError.constraint === "veiculos_placa_key")
     return error("Placa já cadastrada", 409);
@@ -65,11 +75,7 @@ const updateVehicle = async (id: string, body: unknown) => {
     const vehicle = await vehicleModel.updateVehicle(id, validation.data);
     return vehicle ? success(checkVehicleAvailability(vehicle)) : notFound();
   } catch (cause) {
-    const dbError = cause as { code?: string; constraint?: string };
-    if (dbError?.code !== "23505") throw cause;
-    if (dbError.constraint === "veiculos_placa_key")
-      return error("Placa já cadastrada", 409);
-    throw cause;
+    return handleDuplicateKeyError(cause);
   }
 };
 

@@ -16,6 +16,8 @@ const STATUS_OPTIONS: SelectOption<VehicleStatusFilter>[] = [
 
 const FLEET_OPTIONS: SelectOption<FleetFilter>[] = [
   { value: 'todas', label: 'Frota: Todas' },
+  { value: 'SVO', label: 'Frota: SVO' },
+  { value: 'Não informada', label: 'Frota: Não informada' },
   { value: 'Administrativa', label: 'Frota: Administrativa' },
   { value: 'Assistencial', label: 'Frota: Assistencial' },
   { value: 'Operacional', label: 'Frota: Operacional' },

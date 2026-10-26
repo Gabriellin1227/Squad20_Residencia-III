@@ -15,6 +15,7 @@ export function VehicleSummaryCard({ vehicle, onEdit }: VehicleSummaryCardProps)
     { label: 'Modelo', value: vehicle.model },
     { label: 'Quilometragem', value: formatKm(vehicle.mileageKm) },
     { label: 'Frota', value: vehicle.fleet },
+    { label: 'Exclusivo SVO', value: vehicle.exclusiveSvo ? 'Sim' : 'Não' },
     {
       label: 'Próxima vistoria',
       value: vehicle.nextInspection

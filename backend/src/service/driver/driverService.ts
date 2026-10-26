@@ -19,6 +19,16 @@ const notFound = () => error("Motorista não encontrado", 404);
 
 const documentConflict = (cause: unknown) => {
   const dbError = cause as { code?: string; constraint?: string };
+  if (dbError.code === "INVALID_VEHICLES")
+    return error("Um ou mais veículos não existem ou estão inativos", 400);
+  if (
+    dbError.code === "23514" &&
+    dbError.constraint === "motoristas_veiculos_frota"
+  )
+    return error(
+      "Veículo incompatível com a frota do motorista. Remova os vínculos incompatíveis ou marque motorista coringa.",
+      409,
+    );
   if (dbError?.code !== "23505") throw cause;
   if (dbError.constraint === "motoristas_cpf_key")
     return error("CPF já cadastrado", 409);

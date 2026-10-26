@@ -9,6 +9,8 @@ export interface VehicleResponse {
   quilometragem?: number
   capacidade_maxima: number
   status: string
+  frota?: Fleet | null
+  exclusivo_svo?: boolean
   ativo: boolean
 }
 
@@ -22,7 +24,8 @@ export interface VehicleExtraInfoResponse {
 
 export type VehicleStatus = 'ativo' | 'manutencao' | 'em_viagem' | 'inativo'
 
-export type Fleet = 'Administrativa' | 'Assistencial' | 'Operacional' | 'Não informada'
+export type Fleet =
+  'Administrativa' | 'Assistencial' | 'Operacional' | 'SVO' | 'Não informada'
 
 export interface Vehicle {
   id: string
@@ -36,6 +39,7 @@ export interface Vehicle {
   lastAlertedKm?: number
   monthlyCap?: number | null
   fleet: Fleet
+  exclusiveSvo?: boolean
   nextInspection: string // "AAAA-MM"
 }
 

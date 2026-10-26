@@ -8,6 +8,8 @@ interface DriverResponse {
   cnh: string
   categoria: CnhCategory
   validade_cnh: string
+  frota?: Driver['fleet'] | null
+  veiculos?: string[]
   motorista_coringa: boolean
   status: string
   ativo: boolean
@@ -29,8 +31,8 @@ const toDriver = (row: DriverResponse): Driver => ({
       : 'ativo',
   phone: '',
   email: '',
-  fleet: '',
-  vehicles: [],
+  fleet: row.frota ?? '',
+  vehicles: row.veiculos ?? [],
 })
 const toBody = (input: DriverInput) => ({
   nome: input.name,
@@ -39,6 +41,8 @@ const toBody = (input: DriverInput) => ({
   categoria: input.cnhCategory,
   validade_cnh: input.cnhExpiry,
   motorista_coringa: input.isWildcard,
+  frota: input.fleet || null,
+  veiculos: input.vehicles,
 })
 export async function getDrivers(): Promise<Driver[]> {
   return (await api<{ message: DriverResponse[] }>('/drivers')).message.map(toDriver)
