@@ -1,0 +1,109 @@
+name: Sync upstream and deploy frontend
+run-name: Sync main and publish frontend
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fork-production-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'Gabriellin1227/Squad20_Residencia-III'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    steps:
+      - name: Compare upstream and mirror
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          upstream_sha=$(gh api repos/Levi-Fabricio/Squad20_Residencia-III/commits/main --jq .sha)
+          mirror_sha=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
+          echo "sha=$upstream_sha" >> "$GITHUB_OUTPUT"
+          if [[ "$upstream_sha" != "$mirror_sha" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo 'No upstream changes; keeping the current deployment.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - uses: actions/checkout@v5
+        if: steps.version.outputs.run == 'true'
+        with:
+          repository: Levi-Fabricio/Squad20_Residencia-III
+          ref: ${{ steps.version.outputs.sha }}
+          path: source
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        if: steps.version.outputs.run == 'true'
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            source/backend/package-lock.json
+            source/frontend/package-lock.json
+
+      - name: Validate backend
+        if: steps.version.outputs.run == 'true'
+        working-directory: source/backend
+        env:
+          HUSKY: '0'
+        run: |
+          npm ci
+          npm run ci
+          npm run build
+
+      - name: Validate frontend
+        if: steps.version.outputs.run == 'true'
+        working-directory: source/frontend
+        env:
+          CI: 'true'
+        run: |
+          npm ci
+          npm run check
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+
+      - name: Update mirror without rewriting history
+        if: steps.version.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.version.outputs.sha }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/git/refs/heads/main" --method PATCH -f "sha=$SOURCE_SHA" -F force=false
+          echo "Validated upstream commit: $SOURCE_SHA" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish to the existing Vercel project
+        if: steps.version.outputs.run == 'true'
+        working-directory: source/frontend
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VITE_API_URL: https://frotamanager-api.onrender.com
+        run: |
+          set -euo pipefail
+          if [[ -z "$VERCEL_TOKEN" || -z "$VERCEL_ORG_ID" || -z "$VERCEL_PROJECT_ID" ]]; then
+            echo '::warning::Synchronization is ready; configure VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID to enable publication.'
+            echo 'Deployment pending: missing Vercel credentials or project identifiers.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          npm run build:gestor
+          node -e 'require("node:fs").writeFileSync("dist/gestor/vercel.json",JSON.stringify({framework:null,rewrites:[{source:"/(.*)",destination:"/index.html"}]}))'
+          publish_dir=$(mktemp -d)
+          cp -R dist/gestor/. "$publish_dir/"
+          cd "$publish_dir"
+          npm exec --yes --package=vercel@65.2.0 -- vercel deploy --prod --yes --token="$VERCEL_TOKEN" > deployment-url.txt
+          cat deployment-url.txt >> "$GITHUB_STEP_SUMMARY"
