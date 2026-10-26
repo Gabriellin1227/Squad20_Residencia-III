@@ -37,3 +37,12 @@
     justify-content: end;
   }
 }
+
+.withContent {
+  width: min(48rem, calc(100% - #{$space-4}));
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+}
+.content {
+  margin-top: $space-4;
+}

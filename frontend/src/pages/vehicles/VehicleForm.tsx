@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Breadcrumb } from '@/components/Breadcrumb'
 import { Button } from '@/components/Button'
 import { TextField } from '@/components/TextField'
 import { SelectField } from '@/components/SelectField'
@@ -14,8 +15,9 @@ interface Props {
   vehicle: Vehicle | null
   onSave: () => void
   onCancel: () => void
+  onBackToList?: () => void
 }
-export function VehicleForm({ vehicle, onSave, onCancel }: Props) {
+export function VehicleForm({ vehicle, onSave, onCancel, onBackToList }: Props) {
   const [values, setValues] = useState({
     placa: vehicle?.plate ?? '',
     modelo: vehicle?.model ?? '',
@@ -90,6 +92,14 @@ export function VehicleForm({ vehicle, onSave, onCancel }: Props) {
     <div className={styles.page}>
       <PageHeader
         title={vehicle ? 'Editar veículo' : 'Cadastrar veículo'}
+        breadcrumb={
+          <Breadcrumb
+            items={[
+              { label: 'Veículos', to: '/veiculos', onClick: onBackToList ?? onCancel },
+              { label: vehicle ? 'Editar cadastro' : 'Novo cadastro' },
+            ]}
+          />
+        }
         subtitle="Adicione um veículo e defina as condições iniciais de operação."
       />
       <div className={styles.layout}>

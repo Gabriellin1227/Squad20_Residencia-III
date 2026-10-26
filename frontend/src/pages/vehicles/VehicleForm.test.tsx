@@ -1,8 +1,12 @@
-import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import type { ReactNode } from 'react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, test, vi } from 'vitest'
 import { VehicleForm } from './VehicleForm'
 import { api } from '@/service/api'
+
+const renderWithRouter = (ui: ReactNode) => render(ui, { wrapper: MemoryRouter })
 
 vi.mock('@/service/api', () => ({ api: vi.fn<typeof api>() }))
 
@@ -10,7 +14,9 @@ test('cadastra veículo com valores numéricos e prévia da placa', async () => 
   const user = userEvent.setup()
   vi.mocked(api).mockResolvedValueOnce({})
   const onSave = vi.fn<() => void>()
-  render(<VehicleForm vehicle={null} onSave={onSave} onCancel={vi.fn<() => void>()} />)
+  renderWithRouter(
+    <VehicleForm vehicle={null} onSave={onSave} onCancel={vi.fn<() => void>()} />,
+  )
   await user.type(screen.getByLabelText('Placa'), 'abc1d23')
   await user.type(screen.getByLabelText('Modelo'), 'Fiat Fiorino')
   await user.type(screen.getByLabelText('Combustível'), 'Flex')
@@ -40,7 +46,7 @@ test('cadastra veículo com valores numéricos e prévia da placa', async () => 
 test('mantém os dados preenchidos quando a API recusa o cadastro', async () => {
   const user = userEvent.setup()
   vi.mocked(api).mockRejectedValueOnce(new Error('Placa já cadastrada.'))
-  render(
+  renderWithRouter(
     <VehicleForm
       vehicle={null}
       onSave={vi.fn<() => void>()}
@@ -59,7 +65,7 @@ test('mantém os dados preenchidos quando a API recusa o cadastro', async () => 
 test('reaproveita o formulário e envia PUT ao editar', async () => {
   const user = userEvent.setup()
   vi.mocked(api).mockResolvedValueOnce({})
-  render(
+  renderWithRouter(
     <VehicleForm
       vehicle={{
         id: 'vehicle-1',
@@ -87,4 +93,28 @@ test('reaproveita o formulário e envia PUT ao editar', async () => {
     '/vehicles/vehicle-1',
     expect.objectContaining({ method: 'PUT' }),
   )
+})
+
+test('breadcrumb retorna para a lista em vez de reabrir detalhes na edição', async () => {
+  const user = userEvent.setup()
+  const onBackToList = vi.fn<() => void>()
+  const onCancel = vi.fn<() => void>()
+  renderWithRouter(
+    <VehicleForm
+      vehicle={null}
+      onSave={vi.fn<() => void>()}
+      onCancel={onCancel}
+      onBackToList={onBackToList}
+    />,
+  )
+  const link = screen.getByRole('link', { name: 'Veículos' })
+  expect(link).toHaveAttribute('href', '/veiculos')
+  expect(
+    within(screen.getByRole('navigation', { name: 'Você está em' })).getByText(
+      'Novo cadastro',
+    ),
+  ).toHaveAttribute('aria-current', 'page')
+  await user.click(link)
+  expect(onBackToList).toHaveBeenCalledOnce()
+  expect(onCancel).not.toHaveBeenCalled()
 })

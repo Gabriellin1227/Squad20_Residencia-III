@@ -24,3 +24,51 @@ test('login válido carrega a página inicial', async ({ page }) => {
   await expect(page.getByRole('main')).toBeVisible()
   await expect(page.getByText('Motoristas ativos', { exact: true })).toBeVisible()
 })
+
+test('detalhes de veículo mostram histórico e vistoria, e breadcrumb volta à lista', async ({
+  page,
+}) => {
+  const vehicle = {
+    id: '22222222-2222-4222-8222-222222222222',
+    placa: 'SVO0A01',
+    modelo: 'SVO demonstração',
+    tipo_combustivel: 'Diesel',
+    capacidade_maxima: 60,
+    quilometragem: 0,
+    ultimo_km_alertado: 0,
+    frota: 'SVO',
+    exclusivo_svo: true,
+    status: 'ativo',
+    ativo: true,
+  }
+  await page.route('**/vehicles', (route) =>
+    route.fulfill({ json: { message: [vehicle] } }),
+  )
+  await page.route(`**/vehicles/${vehicle.id}`, (route) =>
+    route.fulfill({ json: { message: vehicle } }),
+  )
+  await page.route(`**/vehicles/${vehicle.id}/trips`, (route) =>
+    route.fulfill({ json: { message: [] } }),
+  )
+  await signIn(page)
+  await page.goto('/veiculos')
+  await page.getByRole('button', { name: /Ver detalhes do veículo/ }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Checklist de Vistorias', exact: true }),
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Ver histórico completo', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Histórico de viagens', exact: true })
+  await expect(dialog).toBeVisible()
+  await expect(
+    dialog.getByText('Nenhuma viagem registrada para este veículo.'),
+  ).toBeVisible()
+  await dialog.getByRole('button', { name: 'Fechar', exact: true }).click()
+  await expect(dialog).not.toBeVisible()
+  await page.getByRole('button', { name: 'Editar veículo', exact: true }).click()
+  const breadcrumb = page.getByRole('navigation', { name: 'Você está em', exact: true })
+  await expect(breadcrumb.getByText('Editar cadastro')).toBeVisible()
+  await breadcrumb.getByRole('link', { name: 'Veículos', exact: true }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Controle de Veículos', exact: true }),
+  ).toBeVisible()
+})

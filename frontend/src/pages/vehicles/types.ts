@@ -46,9 +46,12 @@ export interface Vehicle {
 export interface Trip {
   id: string
   code: string
-  origin: string
-  destination: string
-  startedAt: string // ISO 8601
+  origin?: string
+  destination?: string
+  startedAt: string | null // ISO 8601; sem data para viagens ainda não iniciadas
+  status?: string
+  mileageStart?: number | null
+  mileageEnd?: number | null
 }
 
 export type MaintenanceType = 'preventiva' | 'corretiva' | 'impeditiva'
@@ -72,6 +75,7 @@ export interface VehicleDetails {
   availability?: { trips: boolean; checklist: boolean; maintenance: boolean }
   vehicle: Vehicle
   trips: Trip[]
+  tripsError?: string
   maintenances: Maintenance[]
   checklist: InspectionItem[]
 }
